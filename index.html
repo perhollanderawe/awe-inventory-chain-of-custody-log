@@ -363,8 +363,13 @@ button{font-family:inherit}
 .qa-closeout-status{font-size:11px;color:var(--ink-muted)}
 .qa-closeout-status.ready{color:var(--green);font-weight:600}
 .btn-close-req{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#1a7a45;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
-.btn-close-req:hover:not(:disabled){background:#145f35}
-.btn-close-req:disabled{background:var(--ink-faint);cursor:not-allowed;opacity:.5}
+.btn-close-req:hover:not(.gated){background:#145f35}
+.queue-filter-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:4px}
+.queue-filter-btn{background:none;border:none;padding:8px 16px;font-size:12px;font-weight:600;color:var(--ink-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
+.queue-filter-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.queue-filter-btn .qf-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:16px;padding:0 5px;border-radius:8px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;margin-left:5px}
+.queue-filter-btn:not(.active) .qf-count{background:var(--ink-faint);color:var(--ink-muted)}
+.btn-close-req.gated{background:var(--ink-faint);cursor:not-allowed;opacity:.5}
 
 </style>
 </head>
@@ -612,6 +617,7 @@ const COLLECTIONS_LIST = [{"v":"Shop_Timeless","l":"Timeless","n":320},{"v":"col
    ============================================================ */
 const cart = new Map();
 let requestLog = [];
+let queueFilter = 'open';
 const LOG_STORAGE_KEY = 'awe_sku_request_log_v2';
 const MY_IDS_KEY      = 'awe_my_request_ids_v1';
 const API_BASE        = '/api/requests';
@@ -1266,25 +1272,34 @@ function purposeClass(p){
 
 function renderQueue(){ renderQueueData(requestLog); }
 
+function setQueueFilter(f){
+  queueFilter=f;
+  document.querySelectorAll('.queue-filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));
+  renderQueue();
+}
+
 function renderQueueData(entries){
   updateLogBadge();
   const list=document.getElementById('log-list');
   const meta=document.getElementById('log-meta');
   if(!list) return;
-  if(!entries||!entries.length){
-    const msg=IS_ADMIN?'No requests in the queue yet.':'You have not submitted any requests yet.';
-    list.innerHTML=`<div class="log-empty"><div class="log-empty-icon">📋</div><div style="font-weight:600;color:var(--ink-muted);margin-bottom:4px">No requests yet</div><div style="font-size:12px">${msg}</div></div>`;
-    if(meta) meta.textContent='0 requests'; return;
-  }
-  const sorted=[...entries].sort((a,b)=>{
-    const aC=a.status==='Closed'?1:0, bC=b.status==='Closed'?1:0;
-    if(aC!==bC) return aC-bC;
-    return String(a.submittedAt||'').localeCompare(String(b.submittedAt||''));
-  });
-  const openC=sorted.filter(e=>e.status!=='Closed').length;
-  if(meta) meta.textContent=`${openC} open · ${sorted.length-openC} closed`;
+  // empty-state handled per-filter below
+  const allOpen=entries.filter(e=>e.status!=='Closed');
+  const allClosed=entries.filter(e=>e.status==='Closed');
+  if(meta) meta.textContent=`${allOpen.length} open · ${allClosed.length} closed`;
 
-  list.innerHTML=sorted.map((e,idx)=>{
+  const tabsHtml=IS_ADMIN?`<div class="queue-filter-tabs"><button class="queue-filter-btn${queueFilter==='open'?' active':''}" data-filter="open" onclick="setQueueFilter('open')">Open Requests <span class="qf-count">${allOpen.length}</span></button><button class="queue-filter-btn${queueFilter==='closed'?' active':''}" data-filter="closed" onclick="setQueueFilter('closed')">Closed Requests <span class="qf-count">${allClosed.length}</span></button></div>`:'';
+
+  const filtered=IS_ADMIN?(queueFilter==='closed'?allClosed:allOpen):entries;
+  const sorted=[...filtered].sort((a,b)=>String(a.submittedAt||'').localeCompare(String(b.submittedAt||'')));
+
+  if(!sorted.length){
+    const msg=IS_ADMIN?(queueFilter==='closed'?'No closed requests yet.':'No open requests in the queue.'):(IS_ADMIN?'No requests in the queue yet.':'You have not submitted any requests yet.');
+    list.innerHTML=tabsHtml+`<div class="log-empty"><div class="log-empty-icon">📋</div><div style="font-weight:600;color:var(--ink-muted);margin-bottom:4px">No requests</div><div style="font-size:12px">${msg}</div></div>`;
+    return;
+  }
+
+  list.innerHTML=tabsHtml+sorted.map((e,idx)=>{
     const items=e.items||[];
     const itemCount=items.length;
     const qtyTotal=items.reduce((s,it)=>s+(Number(it.qty)||0),0);
@@ -1415,7 +1430,7 @@ function renderQAPanel(entry){
   }).join('');
 
   const closeBtn=!isClosed
-    ?`<button class="btn-close-req" id="qa-close-btn-${escapeAttr(id)}" onclick="closeRequest('${escapeAttr(id)}')" disabled>✓ Close Request</button>`
+    ?`<button class="btn-close-req gated" id="qa-close-btn-${escapeAttr(id)}" onclick="closeRequest('${escapeAttr(id)}')">✓ Close Request</button>`
     :`<span style="font-size:11px;font-weight:700;color:var(--green)">✓ Closed</span>`;
 
   return `<div class="qa-panel" id="qa-panel-${escapeAttr(id)}">
@@ -1468,13 +1483,20 @@ function updateCloseoutUI(reqId){
   if(prog){prog.textContent=`${reviewed}/${items.length} items reviewed · ${c7d.length}/${c7n.length} Cin7 done`; prog.className='qa-progress-text'+(reviewed===items.length?' all-done':'');}
   const stat=document.getElementById(`qa-closeout-status-${reqId}`);
   if(stat){stat.className='qa-closeout-status'+(ready?' ready':''); stat.textContent=ready?'✓ All items reviewed — ready to close':`${items.length-reviewed} item${items.length-reviewed===1?'':'s'} need QA outcome${c7n.length-c7d.length>0?' · '+(c7n.length-c7d.length)+' Cin7 action'+(c7n.length-c7d.length===1?'':'s')+' pending':''}` ;}
-  const btn=document.getElementById(`qa-close-btn-${reqId}`); if(btn) btn.disabled=!ready;
+  const btn=document.getElementById(`qa-close-btn-${reqId}`); if(btn) btn.classList.toggle('gated',!ready);
 }
 
 async function closeRequest(reqId){
   const entry=requestLog.find(e=>e.id===reqId); if(!entry){toast('Not found');return;}
-  if(!canClose(entry)){toast('Complete QA and Cin7 for all items first');return;}
-  if(!confirm('Close this request? This marks the chain of custody as complete.')) return;
+  if(!canClose(entry)){
+    const items=entry.items||[];
+    const missingQA=items.filter(it=>!it.qaOutcome).length;
+    const pendingC7=items.filter(it=>it.cin7ActionRequired==='Yes'&&!it.cin7ActionCompleted).length;
+    if(missingQA>0) toast(`${missingQA} item${missingQA===1?'':'s'} still need a QA outcome`);
+    else if(pendingC7>0) toast(`Check "Cin7 Action Completed" for ${pendingC7} item${pendingC7===1?'':'s'} first`);
+    else toast('Complete all required fields before closing');
+    return;
+  }
   await advanceStatus(reqId,'Closed');
 }
 
