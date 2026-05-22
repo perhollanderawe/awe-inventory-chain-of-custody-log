@@ -595,6 +595,7 @@ const CATALOG_DATE = '5/22/2026 (v26)';
    CONFIG — edit these to match your team
    ============================================================ */
 const AWE_OWNERS = ['Alison', 'Cassondra', 'Erin', 'Gretchen', 'Grita', 'Jacynth', 'Krystal', 'Lara', 'Max', 'Sabrina'];
+const OPS_PROCESSORS = ['Korye', 'Alison', 'Cassondra', 'Erin', 'Gretchen', 'Grita', 'Jacynth', 'Krystal', 'Lara', 'Max', 'Sabrina'];
 const THIRD_PARTY_OPTIONS = ['No','Yes'];
 const PURPOSES = ['Loan','Gifting','Photo Shoot Pull'];
 // Cin7 Assembly BOM lookup (snapshot 2026-05-22)
@@ -1392,7 +1393,7 @@ function renderQAPanel(entry){
         </div>
         <div>
           <span class="qa-field-label">Processed By</span>
-          <input class="qa-field-input" type="text" placeholder="Name" value="${escapeAttr(it.processedBy||'')}" data-req-id="${escapeAttr(id)}" data-sku="${escapeAttr(it.sku||'')}" data-field="processedBy" onchange="saveItemQA(this)"${dis}>
+          <select class="qa-field-input" data-req-id="${escapeAttr(id)}" data-sku="${escapeAttr(it.sku||'')}" data-field="processedBy" onchange="saveItemQA(this)"${dis}>${OPS_PROCESSORS.map(p=>`<option value="${escapeAttr(p)}"${(it.processedBy||'Korye')===p?' selected':''}>${escapeAttr(p)}</option>`).join('')}</select>
         </div>
         <div>
           <span class="qa-field-label">Processed Date</span>
