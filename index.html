@@ -739,8 +739,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Catalog status meta
   const productCount = new Set(CATALOG.map(r => r.h || r.n)).size;
+  const variantCount = CATALOG.length;
   document.getElementById('catalog-status').textContent =
-    `${productCount.toLocaleString()} active products`;
+    `${variantCount.toLocaleString()} variants · ${productCount.toLocaleString()} products`;
   document.getElementById('catalog-freshness').textContent = `Last updated ${CATALOG_DATE}`;
 
   document.getElementById('search-input').addEventListener('input', renderResults);
