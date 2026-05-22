@@ -1109,7 +1109,7 @@ async function loadQueue(){
     try{ requestLog=JSON.parse(localStorage.getItem(LOG_STORAGE_KEY)||'[]'); }catch(_){ requestLog=[]; }
     renderQueue();
     const list2=document.getElementById('log-list');
-    if(list2) list2.insertAdjacentHTML('afterbegin','<div class="api-err">⚠ Could not reach backend — showing locally cached requests.</div>');
+    if(list2) list2.insertAdjacentHTML('afterbegin',`<div class="api-err">⚠ Could not reach backend — showing locally cached requests. (${e.message||e})</div>`);
   }
   updateLogBadge();
 }
@@ -1189,7 +1189,7 @@ async function advanceStatus(id,newStatus){
     const idx=requestLog.findIndex(e=>e.id===id);
     if(idx>=0) requestLog[idx]=updated;
     renderQueue(); toast('Status → '+newStatus);
-  }catch(e){ toast('Update failed'); }
+  }catch(e){ toast('Update failed: '+(e.message||String(e))); }
 }
 
 /* ============================================================
@@ -1452,7 +1452,7 @@ function saveItemQA(el){
   clearTimeout(saveItemQA._t[reqId]);
   saveItemQA._t[reqId]=setTimeout(async()=>{
     try{ await apiFetch('',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:reqId,items:entry.items,_by:'ops'})}); }
-    catch(err){ console.warn('QA save failed',err); }
+    catch(err){ console.warn('QA save failed',err); toast('QA save failed: '+(err.message||String(err))); }
   },800);
 }
 
