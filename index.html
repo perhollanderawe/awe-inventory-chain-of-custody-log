@@ -243,6 +243,10 @@ button{font-family:inherit}
 /* === v27: two-view architecture + QA/closeout workflow === */
 
 /* Admin banner */
+.policy-notice{background:#f8f6f0;border:1px solid #e8e0ce;border-left:4px solid #b8a87a;border-radius:6px;padding:14px 18px;margin:16px 24px 8px;font-size:11.5px;color:var(--ink-muted);line-height:1.6}
+.policy-notice-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#8a7a55;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.policy-notice ul{margin:6px 0 0 16px;padding:0}
+.policy-notice li{margin-bottom:3px}
 .admin-banner{background:#1a2e52;color:#c8d8f8;padding:6px 24px;font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
 .admin-banner .ab-dot{width:7px;height:7px;border-radius:50%;background:#4ec97b;flex-shrink:0}
 .admin-banner .ab-right{margin-left:auto;font-weight:400;opacity:.7;text-transform:none;letter-spacing:0}
@@ -546,6 +550,18 @@ button{font-family:inherit}
 
   </div>
   </div><!-- /builder-view -->
+
+  <div class="policy-notice">
+    <div class="policy-notice-title">📋 Request Processing Policy</div>
+    <ul>
+      <li>Requests are processed <strong>first in, first out</strong> based on fulfillment bandwidth and current queue volume.</li>
+      <li>When there is an active queue, submissions should be planned around a <strong>standard 48-hour processing window</strong>.</li>
+      <li>Submitting a request does not create a same-day fulfillment expectation or move it ahead of existing requests.</li>
+      <li>Business-critical exceptions require <strong>leadership approval</strong>. Approved escalations may impact other pending requests.</li>
+      <li>All standard requests are processed in the order received.</li>
+    </ul>
+  </div>
+
   </div><!-- /builder-view-panel -->
 
   <div class="view-panel" id="log-view">
