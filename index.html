@@ -441,6 +441,10 @@ button{font-family:inherit}
         <button class="btn-ghost" id="clear-cart-btn" style="display:none">Clear all</button>
       </div>
 
+      <div style="padding:12px 16px 0">
+        <label class="field-label">Request Name <span style="font-size:10px;color:var(--ink-faint);font-weight:400">(optional — for internal reference)</span></label>
+        <input type="text" id="req-name" class="field-input" placeholder="e.g. Spring Gifting Run, NY PR Loan…" style="margin-top:4px">
+      </div>
       <div class="requester-grid">
         <div>
           <label class="field-label">AWE Owner <span class="required-mark">*</span></label>
@@ -778,9 +782,9 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     showView('builder');
     document.getElementById('queue-panel-sub').textContent='Requests submitted from this browser';
-    document.getElementById('queue-section-title').textContent='My Requests';
+    document.getElementById('queue-section-title').textContent='Request Queue';
     document.getElementById('queue-section-tag').textContent='Requests submitted from this browser';
-    document.getElementById('queue-panel-title').textContent='My Requests';
+    document.getElementById('queue-panel-title').textContent='Request Queue';
     document.getElementById('queue-fifo-banner').textContent='Your submitted requests · click ↗ Track to view status';
   }
 
@@ -1079,7 +1083,7 @@ function buildViewToggle(){
     document.body.insertAdjacentHTML('afterbegin','<div class="admin-banner"><span class="ab-dot"></span>Admin / Ops View — full queue &amp; fulfillment controls<span class="ab-right">?view=admin</span></div>');
     c.innerHTML=`<div class="view-toggle"><button id="view-builder-btn" class="active" onclick="showView('builder')">New Request</button><button id="view-log-btn" onclick="showView('log')">Request Queue <span class="badge-count" id="log-badge">0</span></button></div>`;
   } else if(!SINGLE_REQ_ID){
-    c.innerHTML=`<div class="view-toggle"><button id="view-builder-btn" class="active" onclick="showView('builder')">New Request</button><button id="view-log-btn" onclick="showView('log')">My Requests <span class="badge-count" id="log-badge">0</span></button></div>`;
+    c.innerHTML=`<div class="view-toggle"><button id="view-builder-btn" class="active" onclick="showView('builder')">New Request</button><button id="view-log-btn" onclick="showView('log')">Request Queue <span class="badge-count" id="log-badge">0</span></button></div>`;
   }
 }
 
@@ -1149,7 +1153,8 @@ async function submitRequest(){
   if(ship==='Yes'){['name','street','city','state','zip','country','email','phone'].forEach(f=>{ const el=document.getElementById('ship-'+f); if(el) shipDetails[f]=el.value; });}
   const now=new Date().toISOString();
   const items=Array.from(cart.entries()).map(([sku,{row,qty,note}])=>({sku,productName:row.n,variantName:row.v,qty:Number(qty)||1,note:note||'',isBom:!!(BOM&&BOM[sku]),imageUrl:row.i||''}));
-  const payload={aweOwner:owner,thirdParty:tp,purpose,requiredBy:reqBy,shippingRequired:ship,shipDetails,items,submittedAt:now};
+  const reqName=document.getElementById('req-name')?.value||'';
+  const payload={requestName:reqName,aweOwner:owner,thirdParty:tp,purpose,requiredBy:reqBy,shippingRequired:ship,shipDetails,items,submittedAt:now};
   const btn=document.getElementById('submit-req-btn');
   if(btn){btn.disabled=true;btn.textContent='Submitting…';}
   try{
@@ -1169,7 +1174,7 @@ async function submitRequest(){
     const lnk=document.getElementById('req-status-link');
     if(succ&&lnk){const u=location.origin+location.pathname+'?req='+encodeURIComponent(rec.id);lnk.href=u;lnk.textContent=u;succ.classList.add('show');}
     cart.clear();
-    ['req-owner','req-third-party','req-purpose','req-required-by','req-ship-required','ship-name','ship-street','ship-city','ship-state','ship-zip','ship-country','ship-email','ship-phone'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    ['req-name','req-owner','req-third-party','req-purpose','req-required-by','req-ship-required','ship-name','ship-street','ship-city','ship-state','ship-zip','ship-country','ship-email','ship-phone'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     document.getElementById('shipping-block').classList.remove('open');
     renderAll(); updateLogBadge(); toast('Request submitted!');
   }catch(e){ toast('Submit failed — please try again'); }
@@ -1339,7 +1344,7 @@ function renderQueueData(entries){
       <div class="le-num">${idx+1}</div>
       <div class="le-body">
         <div class="le-row1">
-          <span class="le-owner">${escapeHtml(own)}</span>
+          <span class="le-owner">${escapeHtml(own)}</span>${e.requestName?`<span style="font-size:11px;font-weight:600;color:var(--ink);margin-left:4px">· ${escapeHtml(e.requestName)}</span>`:''}
           <span class="status-pill ${statusClass(status)}">${escapeHtml(status)}</span>
           ${tpY?`<span class="log-pill" style="background:#fff4e1;color:#8a5c00;padding:2px 7px;font-size:10px;font-weight:600;border-radius:4px">3rd Party</span>`:''}
           <span class="log-pill ${purposeClass(e.purpose)}">${escapeHtml(e.purpose||'')}</span>
