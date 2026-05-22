@@ -395,44 +395,44 @@ button{font-family:inherit}
 <div class="main">
 
   <div class="view-panel active" id="builder-view-panel">
-  <div class="policy-notice" style="margin:0 0 14px">
-    <div class="policy-notice-title">📋 Request Processing Policy</div>
-    <ul>
-      <li>Requests are processed <strong>first in, first out</strong> based on fulfillment bandwidth and current queue volume.</li>
-      <li>As a standard rule of thumb, submissions should be planned around a <strong>minimum 48-hour processing window</strong>.</li>
-      <li>Submitting a request does not create a same-day fulfillment expectation or move it ahead of existing requests.</li>
-      <li>Business-critical exceptions require <strong>leadership approval</strong>. Approved escalations may impact other pending requests.</li>
-      <li>All standard requests are processed in the order received.</li>
-    </ul>
-  </div>
-
-  <div class="tally-bar" id="tally-bar">
-    <div class="t-item">
-      <span class="t-label">In request:</span>
-      <span class="t-count" id="tally-items">0</span>
-      <span class="t-label">items</span>
-    </div>
-    <div class="t-divider"></div>
-    <div class="t-item">
-      <span class="t-count" id="tally-units">0</span>
-      <span class="t-label">units</span>
-    </div>
-    <div class="t-divider"></div>
-    <div class="t-item">
-      <span class="t-bundle" id="tally-bundles">0</span>
-      <span class="t-label">bundles (expand on export)</span>
-    </div>
-    <div class="t-spacer"></div>
-    <a href="#cart-panel" class="t-jump">Review request ↓</a>
-  </div>
-
-  <div class="section-header">
-    <h2>Search &amp; Build Request</h2>
-    <span class="section-tag">Active products only · Click any SKU to copy</span>
-    <div class="section-divider"></div>
-  </div>
-
   <div class="builder-view"><div class="workspace">
+
+    <div style="grid-column:1/-1;margin-bottom:14px" class="policy-notice">
+      <div class="policy-notice-title">📋 Request Processing Policy</div>
+      <ul>
+        <li>Requests are processed <strong>first in, first out</strong> based on fulfillment bandwidth and current queue volume.</li>
+        <li>As a standard rule of thumb, submissions should be planned around a <strong>minimum 48-hour processing window</strong>.</li>
+        <li>Submitting a request does not create a same-day fulfillment expectation or move it ahead of existing requests.</li>
+        <li>Business-critical exceptions require <strong>leadership approval</strong>. Approved escalations may impact other pending requests.</li>
+        <li>All standard requests are processed in the order received.</li>
+      </ul>
+    </div>
+
+    <div style="grid-column:1/-1" class="tally-bar" id="tally-bar">
+      <div class="t-item">
+        <span class="t-label">In request:</span>
+        <span class="t-count" id="tally-items">0</span>
+        <span class="t-label">items</span>
+      </div>
+      <div class="t-divider"></div>
+      <div class="t-item">
+        <span class="t-count" id="tally-units">0</span>
+        <span class="t-label">units</span>
+      </div>
+      <div class="t-divider"></div>
+      <div class="t-item">
+        <span class="t-bundle" id="tally-bundles">0</span>
+        <span class="t-label">bundles (expand on export)</span>
+      </div>
+      <div class="t-spacer"></div>
+      <a href="#cart-panel" class="t-jump">Review request ↓</a>
+    </div>
+
+    <div style="grid-column:1/-1" class="section-header">
+      <h2>Search &amp; Build Request</h2>
+      <span class="section-tag">Active products only · Click any SKU to copy</span>
+      <div class="section-divider"></div>
+    </div>
 
     <div class="card">
       <div class="search-bar">
