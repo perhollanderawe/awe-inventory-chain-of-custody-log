@@ -239,6 +239,133 @@ button{font-family:inherit}
 .placeholder-link{font-size:11px;color:var(--accent);text-decoration:none;margin-top:6px;display:inline-flex;align-items:center;gap:3px}
 .placeholder-link:hover{text-decoration:underline}
 
+
+/* === v27: two-view architecture + QA/closeout workflow === */
+
+/* Admin banner */
+.admin-banner{background:#1a2e52;color:#c8d8f8;padding:6px 24px;font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.admin-banner .ab-dot{width:7px;height:7px;border-radius:50%;background:#4ec97b;flex-shrink:0}
+.admin-banner .ab-right{margin-left:auto;font-weight:400;opacity:.7;text-transform:none;letter-spacing:0}
+
+/* Status badge colours */
+.status-pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;border:1px solid;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.sp-submitted {background:#f0ede9;color:#5c584f;border-color:#d4cfca}
+.sp-accepted  {background:#e8f4fd;color:#1565a0;border-color:#90caf9}
+.sp-pulled    {background:#fef6e0;color:#8a5c00;border-color:#f0d080}
+.sp-active    {background:#e8eef8;color:#2a5298;border-color:#a8c0e8}
+.sp-returned  {background:#fff0e0;color:#a85000;border-color:#f0b060}
+.sp-qa        {background:#f3e8fc;color:#6d2ba6;border-color:#ce93d8}
+.sp-cin7      {background:#e8f5e9;color:#2e7d32;border-color:#a5d6a7}
+.sp-closed    {background:#e6f4ed;color:#1a7a45;border-color:#7fc09b}
+
+/* View panel system */
+.view-panel{display:none}
+.view-panel.active{display:block}
+
+/* View toggle */
+.view-toggle{display:inline-flex;background:var(--tan-faint);border-radius:8px;padding:3px;gap:2px}
+.view-toggle button{background:transparent;border:none;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;border-radius:6px;color:var(--ink-muted);font-family:inherit;transition:all .15s}
+.view-toggle button.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.view-toggle .badge-count{margin-left:6px;background:var(--tan);color:#fff;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700}
+
+/* Log / queue entries */
+.queue-entry-wrap{border-bottom:1px solid var(--border-faint)}
+.queue-entry-wrap:last-child{border-bottom:none}
+.log-entry-v2{padding:14px 18px;display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:start;transition:background .12s}
+.log-entry-v2:hover{background:var(--tan-faint)}
+.log-entry-v2.is-closed{opacity:.7}
+.log-entry-v2.is-closed:hover{opacity:1}
+.le-num{font-size:11px;font-weight:700;color:var(--ink-faint);background:var(--bg);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.le-body{min-width:0}
+.le-row1{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+.le-owner{font-size:14px;font-weight:600;color:var(--ink)}
+.le-row2{font-size:12px;color:var(--ink-muted);display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.le-row2 strong{color:var(--ink)}
+.le-skus{font-size:11px;color:var(--ink-muted);font-family:'SF Mono',Menlo,monospace;line-height:1.6}
+.le-history{font-size:10px;color:var(--ink-faint);margin-top:5px;display:flex;flex-wrap:wrap;gap:6px}
+.le-history-item{background:var(--bg);border:1px solid var(--border-faint);padding:2px 7px;border-radius:4px}
+.le-actions{display:flex;flex-direction:column;gap:6px;align-items:flex-end;min-width:120px}
+.le-actions-row{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.le-btn{background:var(--surface);border:1px solid var(--border);color:var(--ink-muted);padding:5px 9px;font-size:10px;font-weight:600;border-radius:5px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .12s}
+.le-btn:hover{background:var(--tan-faint)}
+.le-btn.edit:hover{border-color:var(--accent);color:var(--accent)}
+.le-btn.delete:hover{border-color:var(--red);color:var(--red)}
+.le-btn.advance{border-color:var(--tan);color:var(--ink)}
+.le-btn.advance:hover{background:var(--tan-light);border-color:var(--tan)}
+.le-btn:disabled{opacity:.4;cursor:default;pointer-events:none}
+.btn-advance-gated{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:var(--surface);border:1px solid var(--amber);color:var(--amber);border-radius:5px;font-size:10px;font-weight:600;cursor:not-allowed;font-family:inherit;opacity:.75}
+
+/* Submit Request button */
+.btn-submit-request{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:#1a7a45;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-submit-request:hover:not(:disabled){background:#145f35}
+.btn-submit-request:disabled{background:var(--ink-faint);cursor:not-allowed;opacity:.6}
+.export-actions-v2{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+
+/* Success banner after submit */
+.success-toast-inline{background:var(--green-bg);border:1px solid #7fc09b;border-radius:6px;padding:12px 16px;margin:12px 0;display:none}
+.success-toast-inline.show{display:block}
+.success-toast-title{font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px}
+.success-toast-sub{font-size:11px;color:var(--ink-muted)}
+.req-link-box{background:var(--accent-light);border:1px solid #a8c0e8;border-radius:6px;padding:10px 14px;margin-top:10px;font-size:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.req-link-box a{color:var(--accent);font-weight:600;word-break:break-all}
+.req-link-copy{background:var(--surface);border:1px solid var(--accent);color:var(--accent);padding:4px 10px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+
+/* Single request status page */
+.single-req-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;max-width:680px;margin:0 auto}
+.single-req-panel .srp-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.single-req-panel .srp-id{font-size:11px;color:var(--ink-faint);font-family:monospace;margin-bottom:16px}
+.single-req-panel .srp-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-size:13px}
+.srp-label{font-weight:600;color:var(--ink-muted);min-width:110px}
+.srp-val{color:var(--ink)}
+.srp-item-row{display:flex;gap:10px;align-items:baseline;padding:4px 0;font-size:12px;border-bottom:1px solid var(--border-faint)}
+.srp-item-row:last-child{border-bottom:none}
+.srp-item-sku{font-family:monospace;font-size:11px;font-weight:600;color:var(--ink-muted);min-width:120px}
+.srp-item-name{color:var(--ink);flex:1}
+.srp-item-qty{font-weight:600;color:var(--ink);width:30px;text-align:right}
+.history-timeline{margin-top:14px;padding-top:12px;border-top:1px solid var(--border-faint)}
+.ht-item{display:flex;gap:10px;align-items:baseline;font-size:11px;color:var(--ink-muted);padding:3px 0}
+.ht-dot{width:6px;height:6px;border-radius:50%;background:var(--tan);flex-shrink:0;margin-top:4px}
+.ht-status{font-weight:700;color:var(--ink);min-width:150px}
+
+/* API states */
+.api-loading{padding:40px;text-align:center;color:var(--ink-faint);font-size:13px}
+.api-err{background:var(--red-bg);border:1px solid #e6b8b8;border-radius:6px;padding:10px 14px;font-size:12px;color:var(--red);margin:12px 0}
+
+/* QA Panel */
+.qa-panel{background:#fafafa;border-top:2px solid var(--border)}
+.qa-panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:#f5f3ef;border-bottom:1px solid var(--border-faint);flex-wrap:wrap;gap:8px}
+.qa-panel-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.qa-progress-text{font-size:11px;color:var(--ink-faint)}
+.qa-progress-text.all-done{color:var(--green);font-weight:600}
+.qa-item{border-bottom:1px solid var(--border-faint);padding:12px 18px}
+.qa-item-header{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.qa-item-sku{font-family:'SF Mono',Menlo,monospace;font-size:11px;font-weight:700;color:var(--ink-muted);background:var(--bg);padding:2px 6px;border-radius:3px}
+.qa-item-name{font-size:12px;color:var(--ink);flex:1}
+.qa-item-qty{font-size:11px;font-weight:600;color:var(--ink-faint)}
+.qa-outcome-set{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;margin-left:6px}
+.qa-sellable{background:var(--green-bg);color:var(--green)}
+.qa-damaged {background:var(--red-bg);color:var(--red)}
+.qa-missing {background:var(--amber-bg);color:var(--amber)}
+.qa-review  {background:#f3e8fc;color:#6d2ba6}
+.qa-fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-top:4px}
+.qa-fields .full{grid-column:1/-1}
+.qa-field-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-faint);margin-bottom:3px;display:block}
+.qa-field-input{width:100%;border:1px solid var(--border);border-radius:4px;padding:5px 7px;font-size:11px;color:var(--ink);font-family:inherit;background:var(--surface);outline:none;transition:border-color .12s}
+.qa-field-input:focus{border-color:var(--accent)}
+.qa-field-input:disabled{background:var(--bg);color:var(--ink-faint)}
+.qa-field-select{width:100%;border:1px solid var(--border);border-radius:4px;padding:5px 7px;font-size:11px;color:var(--ink);font-family:inherit;background:var(--surface);outline:none;cursor:pointer}
+.qa-field-select:focus{border-color:var(--accent)}
+.qa-field-select:disabled{background:var(--bg);color:var(--ink-faint)}
+.qa-check-row{display:flex;align-items:center;gap:6px;margin-top:6px}
+.qa-check-row input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--green)}
+.qa-check-row label{font-size:11px;color:var(--ink);cursor:pointer}
+.qa-closeout-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:#f0ede9;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px}
+.qa-closeout-status{font-size:11px;color:var(--ink-muted)}
+.qa-closeout-status.ready{color:var(--green);font-weight:600}
+.btn-close-req{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#1a7a45;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-close-req:hover:not(:disabled){background:#145f35}
+.btn-close-req:disabled{background:var(--ink-faint);cursor:not-allowed;opacity:.5}
+
 </style>
 </head>
 <body>
@@ -249,18 +376,16 @@ button{font-family:inherit}
       <div class="header-title">Awe Inventory Request - Chain Of Custody Log</div>
       <div class="header-meta">
         <span id="catalog-status">Catalog loading…</span>
-        <span id="catalog-freshness"></span>
+        <span id="catalog-freshness"></span><span id="last-updated-meta" style="color:var(--ink-faint);font-size:11px"></span>
       </div>
     </div>
-    <div class="view-toggle">
-        <button id="view-builder-btn" class="active">Request Builder</button>
-        <button id="view-log-btn">Request Log<span class="badge-count" id="log-badge">0</span></button>
-      </div>
+    <div id="view-toggle-container"><!-- JS-rendered --></div>
   </div>
 </div>
 
 <div class="main">
 
+  <div class="view-panel active" id="builder-view-panel">
   <div class="tally-bar" id="tally-bar">
     <div class="t-item">
       <span class="t-label">In request:</span>
@@ -389,47 +514,56 @@ button{font-family:inherit}
         </div>
       </div>
 
+      <div class="success-toast-inline" id="submit-success">
+        <div class="success-toast-title">✓ Request submitted!</div>
+        <div class="success-toast-sub">Share this link to track status:</div>
+        <div class="req-link-box">
+          <a id="req-status-link" href="#" target="_blank"></a>
+          <button class="req-link-copy" onclick="copyReqLink()">Copy link</button>
+        </div>
+      </div>
       <div class="export-bar">
         <div class="export-summary">
           <strong id="export-item-count">0</strong> items ·
           <strong id="export-qty-count">0</strong> units
         </div>
-        <div class="export-actions">
-          <button class="btn-secondary" id="export-word-btn" disabled title="Printable team copy: Hero · SKU · Variant · Qty">
-            Export Word
-          </button>
-          <button class="btn-primary" id="export-btn" disabled>
-            Export XLSX
-          </button>
+        <div class="export-actions-v2">
+          <button class="btn-secondary" id="export-word-btn" disabled title="Word export">Word</button>
+          <button class="btn-secondary" id="export-btn" disabled>XLSX</button>
+          <button class="btn-submit-request" id="submit-req-btn" disabled>Submit Request</button>
         </div>
       </div>
     </div>
 
   </div>
   </div><!-- /builder-view -->
+  </div><!-- /builder-view-panel -->
 
-  <div class="log-view" id="log-view">
+  <div class="view-panel" id="log-view">
     <div class="section-header">
-      <h2>Request Log</h2>
-      <span class="section-tag">First-in, first-out — oldest at top</span>
+      <h2 id="queue-section-title">Request Queue</h2>
+      <span class="section-tag" id="queue-section-tag">Full queue — oldest at top</span>
       <div class="section-divider"></div>
     </div>
     <div class="log-card">
       <div class="log-header">
         <div>
-          <div class="log-header-title">Submitted Requests</div>
-          <div class="log-header-sub">Stored locally in your browser · Persists across sessions</div>
+          <div class="log-header-title" id="queue-panel-title">Submitted Requests</div>
+          <div class="log-header-sub" id="queue-panel-sub">Loading…</div>
         </div>
-        <div class="log-header-meta" id="log-meta">0 requests</div>
-      </div>
-      <div class="fifo-banner">↑ Oldest request · ↓ Newest request — process in order</div>
-      <div id="log-list">
-        <div class="log-empty">
-          <div class="log-empty-icon">📋</div>
-          <div style="font-weight:600;color:var(--ink-muted);margin-bottom:4px">No requests yet</div>
-          <div style="font-size:12px">Submitted requests will appear here in the order they were made.</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div class="log-header-meta" id="log-meta">—</div>
+          <button class="le-btn" id="queue-refresh-btn" title="Refresh">↻</button>
         </div>
       </div>
+      <div class="fifo-banner" id="queue-fifo-banner">↑ Oldest · ↓ Newest — process in order</div>
+      <div id="log-list"><div class="api-loading">Loading…</div></div>
+    </div>
+  </div>
+
+  <div class="view-panel" id="single-req-view">
+    <div class="single-req-panel" id="single-req-content">
+      <div class="api-loading">Loading request…</div>
     </div>
   </div>
 
@@ -486,11 +620,67 @@ const COLLECTIONS_LIST = [{"v":"Shop_Timeless","l":"Timeless","n":320},{"v":"col
 
 
 /* ============================================================
-   STATE
+   STATE — v27
    ============================================================ */
 const cart = new Map();
-let requestLog = []; // FIFO array of submitted requests
+let requestLog = [];
 const LOG_STORAGE_KEY = 'awe_sku_request_log_v2';
+const MY_IDS_KEY      = 'awe_my_request_ids_v1';
+const API_BASE        = '/api/requests';
+
+const _urlParams    = new URLSearchParams(location.search);
+const IS_ADMIN      = _urlParams.get('view') === 'admin';
+const SINGLE_REQ_ID = _urlParams.get('req') || null;
+
+const STATUSES = [
+  'Submitted',
+  'Accepted',
+  'Inventory Pulled',
+  'Active / In Use',
+  'Returned',
+  'QA Inspection',
+  'Cin7 Processing',
+  'Closed'
+];
+const LOCKED_STATUSES   = ['Inventory Pulled','Active / In Use','Returned','QA Inspection','Cin7 Processing','Closed'];
+const QA_PANEL_STATUSES = ['Returned','QA Inspection','Cin7 Processing','Closed'];
+
+function statusClass(s){
+  if(!s) return 'sp-submitted';
+  const k=s.toLowerCase();
+  if(k==='accepted')       return 'sp-accepted';
+  if(k.includes('pulled')) return 'sp-pulled';
+  if(k.includes('active')) return 'sp-active';
+  if(k.includes('return')) return 'sp-returned';
+  if(k.includes('qa'))     return 'sp-qa';
+  if(k.includes('cin7'))   return 'sp-cin7';
+  if(k.includes('closed')) return 'sp-closed';
+  return 'sp-submitted';
+}
+function qaOutcomeClass(o){
+  if(!o) return '';
+  const k=o.toLowerCase();
+  if(k.includes('sellable')) return 'qa-sellable';
+  if(k.includes('damaged'))  return 'qa-damaged';
+  if(k.includes('missing'))  return 'qa-missing';
+  return 'qa-review';
+}
+function nextStatus(cur){
+  const i=STATUSES.indexOf(cur);
+  if(i<0||i>=STATUSES.length-1) return null;
+  const n=STATUSES[i+1];
+  if(n==='Closed') return null; // close handled by closeout button only
+  return n;
+}
+function canAdvanceFromQA(entry){ return (entry.items||[]).every(it=>it.qaOutcome); }
+function canClose(entry){
+  const items=entry.items||[];
+  if(!items.length) return false;
+  const allR=items.every(it=>it.qaOutcome);
+  const c7n=items.filter(it=>it.cin7ActionRequired==='Yes');
+  return allR&&(c7n.length===0||c7n.every(it=>it.cin7ActionCompleted));
+}
+let lastSubmittedId=null;
 
 /* ============================================================
    INIT
@@ -540,19 +730,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('catalog-freshness').textContent = `Last updated ${CATALOG_DATE}`;
 
   document.getElementById('search-input').addEventListener('input', renderResults);
-  document.getElementById('export-btn').addEventListener('click', exportXLSX);
-  document.getElementById('export-word-btn').addEventListener('click', exportWord);
-  document.getElementById('clear-cart-btn').addEventListener('click', () => {
-    if (cart.size === 0) return;
-    if (confirm('Clear all items from your request list?')) {
-      cart.clear(); renderAll(); toast('Request list cleared');
-    }
-  });
+  const _eb=document.getElementById('export-btn'); if(_eb) _eb.addEventListener('click',exportXLSX);
+  const _ew=document.getElementById('export-word-btn'); if(_ew) _ew.addEventListener('click',exportWord);
+  const _cc=document.getElementById('clear-cart-btn'); if(_cc) _cc.addEventListener('click',()=>{ if(cart.size===0)return; if(confirm('Clear all items from your request list?')){ cart.clear();renderAll();toast('Request list cleared'); } });
   ['req-third-party','req-owner','req-purpose','req-required-by','req-ship-required',
    'ship-name','ship-street','ship-city','ship-state','ship-zip','ship-country','ship-email','ship-phone']
    .forEach(id => {
      const el = document.getElementById(id);
-     if (el) el.addEventListener('input', updateExportButton);
+     if(el){ el.addEventListener('input',updateExportButton); el.addEventListener('change',updateExportButton); }
    });
 
   // Click-to-copy SKU (delegated)
@@ -589,13 +774,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape' && lb.classList.contains('open')) closeLightbox();
   });
 
-  // View toggle handlers
-  document.getElementById('view-builder-btn').addEventListener('click', () => showView('builder'));
-  document.getElementById('view-log-btn').addEventListener('click', () => showView('log'));
+  buildViewToggle();
 
-  loadLog();
+  if(SINGLE_REQ_ID){ showView('single'); loadSingleReq(SINGLE_REQ_ID); }
+  else if(IS_ADMIN){
+    showView('builder');
+    document.getElementById('queue-panel-sub').textContent='All requests · shared backend';
+    loadQueue();
+  } else {
+    showView('builder');
+    document.getElementById('queue-panel-sub').textContent='Requests submitted from this browser';
+    document.getElementById('queue-section-title').textContent='My Requests';
+    document.getElementById('queue-section-tag').textContent='Requests submitted from this browser';
+    document.getElementById('queue-panel-title').textContent='My Requests';
+    document.getElementById('queue-fifo-banner').textContent='Your submitted requests · click ↗ Track to view status';
+  }
+
+  const luMeta=document.getElementById('last-updated-meta');
+  if(luMeta) luMeta.textContent=' · Last updated 2026-05-22 Pacific';
+
+  const submitBtn=document.getElementById('submit-req-btn');
+  if(submitBtn) submitBtn.addEventListener('click',submitRequest);
+
+  const qRefresh=document.getElementById('queue-refresh-btn');
+  if(qRefresh) qRefresh.addEventListener('click',()=>{ if(IS_ADMIN) loadQueue(); else loadMyRequests(); });
+
   renderAll();
-  renderLog();
 });
 
 /* ============================================================
@@ -860,6 +1064,7 @@ function updateExportButton(){
   const reqBy = document.getElementById('req-required-by').value;
   const ship = document.getElementById('req-ship-required').value;
   let valid = cart.size > 0 && owner && tp && purpose && reqBy && ship;
+  const _sb=document.getElementById('submit-req-btn'); if(_sb) _sb.disabled=!valid;
   if (valid && ship === 'Yes'){
     valid = ['ship-name','ship-street','ship-city','ship-state','ship-zip','ship-country','ship-email','ship-phone']
       .every(id => document.getElementById(id).value.trim());
@@ -871,172 +1076,420 @@ function updateExportButton(){
 
 
 /* ============================================================
-   VIEW TOGGLE
+   VIEW TOGGLE + NAVIGATION — v27
    ============================================================ */
-function showView(name){
-  const builder = document.querySelector('.builder-view');
-  const log = document.getElementById('log-view');
-  const bb = document.getElementById('view-builder-btn');
-  const lb = document.getElementById('view-log-btn');
-  if (name === 'log'){
-    builder.classList.add('hidden');
-    log.classList.add('active');
-    bb.classList.remove('active');
-    lb.classList.add('active');
-    renderLog();
-  } else {
-    builder.classList.remove('hidden');
-    log.classList.remove('active');
-    bb.classList.add('active');
-    lb.classList.remove('active');
+function buildViewToggle(){
+  const c=document.getElementById('view-toggle-container');
+  if(!c) return;
+  if(IS_ADMIN){
+    document.body.insertAdjacentHTML('afterbegin','<div class="admin-banner"><span class="ab-dot"></span>Admin / Ops View — full queue &amp; fulfillment controls<span class="ab-right">?view=admin</span></div>');
+    c.innerHTML=`<div class="view-toggle"><button id="view-builder-btn" class="active" onclick="showView('builder')">New Request</button><button id="view-log-btn" onclick="showView('log')">Request Queue <span class="badge-count" id="log-badge">0</span></button></div>`;
+  } else if(!SINGLE_REQ_ID){
+    c.innerHTML=`<div class="view-toggle"><button id="view-builder-btn" class="active" onclick="showView('builder')">New Request</button><button id="view-log-btn" onclick="showView('log')">My Requests <span class="badge-count" id="log-badge">0</span></button></div>`;
   }
+}
+
+function showView(name){
+  const panels={builder:document.getElementById('builder-view-panel'),log:document.getElementById('log-view'),single:document.getElementById('single-req-view')};
+  Object.entries(panels).forEach(([k,el])=>{ if(el) el.classList.toggle('active',k===name); });
+  const bb=document.getElementById('view-builder-btn'), lb=document.getElementById('view-log-btn');
+  if(bb) bb.classList.toggle('active',name==='builder');
+  if(lb) lb.classList.toggle('active',name==='log'||name==='single');
+  if(name==='log'){ if(IS_ADMIN) loadQueue(); else loadMyRequests(); }
 }
 
 /* ============================================================
-   REQUEST LOG (FIFO)
+   API HELPERS
    ============================================================ */
-function loadLog(){
-  try {
-    const raw = localStorage.getItem(LOG_STORAGE_KEY);
-    requestLog = raw ? JSON.parse(raw) : [];
-    if (!Array.isArray(requestLog)) requestLog = [];
-  } catch(e){ requestLog = []; }
+async function apiFetch(path,options={}){
+  const r=await fetch(API_BASE+path,options);
+  if(!r.ok){ const t=await r.text(); throw new Error(t||r.status); }
+  if(r.status===204) return null;
+  return r.json();
 }
 
-function persistLog(){
-  try { localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(requestLog)); }
-  catch(e){ console.warn('Log persist failed', e); }
-}
-
-function recordRequest(entry){
-  requestLog.push(entry); // FIFO: append to end
-  persistLog();
-  renderLog();
-  updateLogBadge();
-}
-
-function deleteLogEntry(id){
-  if (!confirm('Delete this request from the log? This cannot be undone.')) return;
-  requestLog = requestLog.filter(e => e.id !== id);
-  persistLog();
-  renderLog();
-  updateLogBadge();
-  toast('Request deleted from log');
-}
-
-function editLogEntry(id){
-  const entry = requestLog.find(e => e.id === id);
-  if (!entry) return;
-  if (cart.size > 0 && !confirm('Editing this request will replace your current Request Builder list. Continue?')) return;
-  // Load entry back into cart
-  cart.clear();
-  entry.items.forEach(it => {
-    const row = CATALOG.find(r => r.s === it.sku);
-    if (row){
-      cart.set(it.sku, { row, qty: it.qty, note: it.note || '' });
-    }
-  });
-  document.getElementById('req-third-party').value = entry.thirdParty || '';
-  document.getElementById('req-owner').value = entry.aweOwner || entry.owner || '';
-  document.getElementById('req-purpose').value = entry.purpose || '';
-  if (document.getElementById('req-required-by')) document.getElementById('req-required-by').value = entry.requiredBy || '';
-  const shipFld = document.getElementById('req-ship-required');
-  if (shipFld){
-    shipFld.value = entry.shippingRequired || '';
-    if (entry.shippingRequired === 'Yes') document.getElementById('shipping-block').classList.add('open');
-    else document.getElementById('shipping-block').classList.remove('open');
-    if (entry.shipDetails){
-      document.getElementById('ship-name').value = entry.shipDetails.name || '';
-      document.getElementById('ship-street').value = entry.shipDetails.street || '';
-      document.getElementById('ship-city').value = entry.shipDetails.city || '';
-      document.getElementById('ship-state').value = entry.shipDetails.state || '';
-      document.getElementById('ship-zip').value = entry.shipDetails.zip || '';
-      document.getElementById('ship-country').value = entry.shipDetails.country || '';
-      document.getElementById('ship-email').value = entry.shipDetails.email || '';
-      document.getElementById('ship-phone').value = entry.shipDetails.phone || '';
-    }
+/* ============================================================
+   QUEUE LOADING
+   ============================================================ */
+async function loadQueue(){
+  const list=document.getElementById('log-list');
+  if(list) list.innerHTML='<div class="api-loading">Loading requests…</div>';
+  try{
+    const data=await apiFetch('');
+    requestLog=Array.isArray(data)?data:[];
+    renderQueue();
+  }catch(e){
+    try{ requestLog=JSON.parse(localStorage.getItem(LOG_STORAGE_KEY)||'[]'); }catch(_){ requestLog=[]; }
+    renderQueue();
+    const list2=document.getElementById('log-list');
+    if(list2) list2.insertAdjacentHTML('afterbegin','<div class="api-err">⚠ Could not reach backend — showing locally cached requests.</div>');
   }
-  // Remove the entry from log so re-exporting creates a new one
-  requestLog = requestLog.filter(e => e.id !== id);
-  persistLog();
-  renderLog();
   updateLogBadge();
-  showView('builder');
-  renderAll();
-  toast('Loaded into Request Builder for editing');
+}
+
+async function loadMyRequests(){
+  const list=document.getElementById('log-list');
+  if(list) list.innerHTML='<div class="api-loading">Loading your requests…</div>';
+  let ids=[];
+  try{ ids=JSON.parse(localStorage.getItem(MY_IDS_KEY)||'[]'); }catch(e){}
+  if(!ids.length){ renderQueueData([]); return; }
+  try{
+    const res=await Promise.allSettled(ids.map(id=>apiFetch('?id='+encodeURIComponent(id))));
+    requestLog=res.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);
+    renderQueue();
+  }catch(e){ renderQueueData([]); }
+  updateLogBadge();
+}
+
+/* ============================================================
+   SUBMIT REQUEST
+   ============================================================ */
+async function submitRequest(){
+  const owner=document.getElementById('req-owner').value;
+  const tp=document.getElementById('req-third-party').value;
+  const purpose=document.getElementById('req-purpose').value;
+  const reqBy=document.getElementById('req-required-by').value;
+  const ship=document.getElementById('req-ship-required').value;
+  if(!owner||!tp||!purpose||!reqBy||!ship||cart.size===0) return;
+  const shipDetails={};
+  if(ship==='Yes'){['name','street','city','state','zip','country','email','phone'].forEach(f=>{ const el=document.getElementById('ship-'+f); if(el) shipDetails[f]=el.value; });}
+  const now=new Date().toISOString();
+  const items=Array.from(cart.entries()).map(([sku,{row,qty,note}])=>({sku,productName:row.n,variantName:row.v,qty:Number(qty)||1,note:note||'',isBom:!!(BOM&&BOM[sku]),imageUrl:row.i||''}));
+  const payload={aweOwner:owner,thirdParty:tp,purpose,requiredBy:reqBy,shippingRequired:ship,shipDetails,items,submittedAt:now};
+  const btn=document.getElementById('submit-req-btn');
+  if(btn){btn.disabled=true;btn.textContent='Submitting…';}
+  try{
+    let rec;
+    try{
+      rec=await apiFetch('',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    }catch(e){
+      rec={...payload,id:'r_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),status:'Submitted',statusHistory:[{status:'Submitted',at:now,by:'requester'}],_localOnly:true};
+      const st=[];try{st.push(...JSON.parse(localStorage.getItem(LOG_STORAGE_KEY)||'[]'));}catch(_){}
+      st.push(rec); localStorage.setItem(LOG_STORAGE_KEY,JSON.stringify(st));
+    }
+    lastSubmittedId=rec.id;
+    let myIds=[];try{myIds=JSON.parse(localStorage.getItem(MY_IDS_KEY)||'[]');}catch(e){}
+    if(!myIds.includes(rec.id)) myIds.push(rec.id);
+    localStorage.setItem(MY_IDS_KEY,JSON.stringify(myIds));
+    const succ=document.getElementById('submit-success');
+    const lnk=document.getElementById('req-status-link');
+    if(succ&&lnk){const u=location.origin+location.pathname+'?req='+encodeURIComponent(rec.id);lnk.href=u;lnk.textContent=u;succ.classList.add('show');}
+    cart.clear();
+    ['req-owner','req-third-party','req-purpose','req-required-by','req-ship-required','ship-name','ship-street','ship-city','ship-state','ship-zip','ship-country','ship-email','ship-phone'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    document.getElementById('shipping-block').classList.remove('open');
+    renderAll(); updateLogBadge(); toast('Request submitted!');
+  }catch(e){ toast('Submit failed — please try again'); }
+  finally{ if(btn){btn.disabled=false;btn.textContent='Submit Request';} }
+}
+
+function copyReqLink(){
+  const lnk=document.getElementById('req-status-link');
+  if(!lnk) return;
+  navigator.clipboard?.writeText(lnk.href).then(()=>toast('Link copied!')).catch(()=>toast('Copy failed'));
+}
+
+/* ============================================================
+   ADVANCE STATUS (admin only)
+   ============================================================ */
+async function advanceStatus(id,newStatus){
+  const entry=requestLog.find(e=>e.id===id);
+  if(entry){
+    if(newStatus==='Cin7 Processing'&&!canAdvanceFromQA(entry)){ toast('Complete QA outcome for all items first'); return; }
+    if(newStatus==='Closed'&&!canClose(entry)){ toast('All items need QA outcomes and Cin7 processing before closing'); return; }
+  }
+  try{
+    const updated=await apiFetch('',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,status:newStatus,_by:'ops'})});
+    const idx=requestLog.findIndex(e=>e.id===id);
+    if(idx>=0) requestLog[idx]=updated;
+    renderQueue(); toast('Status → '+newStatus);
+  }catch(e){ toast('Update failed'); }
+}
+
+/* ============================================================
+   EDIT REQUEST
+   ============================================================ */
+function editLogEntry(id){
+  const entry=requestLog.find(e=>e.id===id);
+  if(!entry) return;
+  if(!IS_ADMIN&&LOCKED_STATUSES.includes(entry.status||'')){alert('This request is locked. Only Admin/Ops can edit after inventory is pulled.');return;}
+  if(cart.size>0&&!confirm('Replace current request list with this entry?')) return;
+  cart.clear();
+  entry.items.forEach(it=>{const row=CATALOG.find(r=>r.s===it.sku);if(row) cart.set(it.sku,{row,qty:it.qty,note:it.note||''});});
+  document.getElementById('req-third-party').value=entry.thirdParty||'';
+  document.getElementById('req-owner').value=entry.aweOwner||entry.owner||'';
+  document.getElementById('req-purpose').value=entry.purpose||'';
+  const rbd=document.getElementById('req-required-by'); if(rbd) rbd.value=entry.requiredBy||'';
+  const sf=document.getElementById('req-ship-required');
+  if(sf){sf.value=entry.shippingRequired||'';if(entry.shippingRequired==='Yes')document.getElementById('shipping-block').classList.add('open');else document.getElementById('shipping-block').classList.remove('open');
+    if(entry.shipDetails){['name','street','city','state','zip','country','email','phone'].forEach(f=>{const el=document.getElementById('ship-'+f);if(el)el.value=entry.shipDetails[f]||'';});}
+  }
+  showView('builder'); renderAll(); toast('Loaded into Request Builder for editing');
+}
+
+/* ============================================================
+   DELETE REQUEST (admin only)
+   ============================================================ */
+async function deleteLogEntry(id){
+  if(!IS_ADMIN){toast('Only Admin/Ops can delete requests');return;}
+  if(!confirm('Delete this request? Cannot be undone.')) return;
+  try{
+    await apiFetch('?id='+encodeURIComponent(id),{method:'DELETE'});
+  }catch(e){
+    try{let s=JSON.parse(localStorage.getItem(LOG_STORAGE_KEY)||'[]');s=s.filter(e=>e.id!==id);localStorage.setItem(LOG_STORAGE_KEY,JSON.stringify(s));}catch(_){}
+  }
+  requestLog=requestLog.filter(e=>e.id!==id);
+  renderQueue(); updateLogBadge(); toast('Request deleted');
 }
 
 function updateLogBadge(){
-  const badge = document.getElementById('log-badge');
-  if (badge) badge.textContent = requestLog.length;
+  const b=document.getElementById('log-badge');
+  if(b) b.textContent=requestLog.length;
+}
+
+/* ============================================================
+   SINGLE REQUEST STATUS PAGE
+   ============================================================ */
+async function loadSingleReq(id){
+  const panel=document.getElementById('single-req-content');
+  if(!panel) return;
+  try{ const req=await apiFetch('?id='+encodeURIComponent(id)); renderSingleReq(req,panel); }
+  catch(e){ if(panel) panel.innerHTML='<div class="api-err">Request not found or unavailable.</div>'; }
+}
+
+function renderSingleReq(req,panel){
+  const status=req.status||'Submitted';
+  const statusPill=`<span class="status-pill ${statusClass(status)}">${escapeHtml(status)}</span>`;
+  const isLocked=LOCKED_STATUSES.includes(status);
+  const editBtn=!isLocked?`<button class="le-btn edit" onclick="editLogEntry('${escapeAttr(req.id)}');showView('builder')">✎ Edit request</button>`:`<span style="font-size:11px;color:var(--ink-faint)">🔒 Locked — Ops is working on this</span>`;
+  const descs={'Submitted':'Your request has been submitted and is awaiting review.','Accepted':'Accepted by the Ops team.','Inventory Pulled':'Ops has pulled the requested inventory.','Active / In Use':'Items are currently in use.','Returned':'Items have been returned to Ops.','QA Inspection':'Ops is reviewing the returned items.','Cin7 Processing':'Inventory adjustments are being processed.','Closed':'This request has been fully closed out.'};
+  const history=(req.statusHistory||[]).map(h=>`<div class="ht-item"><div class="ht-dot"></div><div class="ht-status">${escapeHtml(h.status)}</div><div>${escapeHtml(new Date(h.at).toLocaleString())} · ${escapeHtml(h.by||'system')}</div></div>`).join('');
+  const items=(req.items||[]).map(it=>`<div class="srp-item-row"><div class="srp-item-sku">${escapeHtml(it.sku||'')}</div><div class="srp-item-name">${escapeHtml(it.productName||'')}${it.variantName?' · '+escapeHtml(it.variantName):''}</div><div class="srp-item-qty">×${it.qty||1}</div></div>`).join('');
+  panel.innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap"><div class="srp-title">Request Status</div>${statusPill}</div>${descs[status]?`<div style="font-size:12px;color:var(--ink-muted);margin-bottom:16px">${escapeHtml(descs[status])}</div>`:''}<div class="srp-id">${escapeHtml(req.id)}</div><div class="srp-row"><span class="srp-label">AWE Owner</span><span class="srp-val">${escapeHtml(req.aweOwner||req.owner||'—')}</span></div><div class="srp-row"><span class="srp-label">Purpose</span><span class="srp-val">${escapeHtml(req.purpose||'—')}</span></div><div class="srp-row"><span class="srp-label">Third Party</span><span class="srp-val">${escapeHtml(req.thirdParty||'—')}</span></div><div class="srp-row"><span class="srp-label">Required By</span><span class="srp-val">${escapeHtml(req.requiredBy||'—')}</span></div><div class="srp-row"><span class="srp-label">Submitted</span><span class="srp-val">${escapeHtml(new Date(req.submittedAt||'').toLocaleString())}</span></div><div class="srp-items"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:8px">${(req.items||[]).length} items</div>${items}</div><div class="history-timeline"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:8px">Status history</div>${history||'<div style="font-size:11px;color:var(--ink-faint)">No history</div>'}</div><div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--border-faint)">${editBtn}</div>`;
 }
 
 function purposeClass(p){
-  if (!p) return '';
-  const k = p.toLowerCase();
-  if (k.includes('gift')) return 'log-pill-purpose-gifting';
-  if (k.includes('loan')) return 'log-pill-purpose-loan';
-  if (k.includes('photo')) return 'log-pill-purpose-photo';
+  if(!p) return '';
+  const k=p.toLowerCase();
+  if(k.includes('gift')) return 'log-pill-purpose-gifting';
+  if(k.includes('loan')) return 'log-pill-purpose-loan';
+  if(k.includes('photo')) return 'log-pill-purpose-photo';
   return 'log-pill-purpose-loan';
 }
 
-function renderLog(){
+function renderQueue(){ renderQueueData(requestLog); }
+
+function renderQueueData(entries){
   updateLogBadge();
-  const list = document.getElementById('log-list');
-  const meta = document.getElementById('log-meta');
-  if (!list) return;
-
-  if (requestLog.length === 0){
-    list.innerHTML = `
-      <div class="log-empty">
-        <div class="log-empty-icon">📋</div>
-        <div style="font-weight:600;color:var(--ink-muted);margin-bottom:4px">No requests yet</div>
-        <div style="font-size:12px">Submitted requests will appear here in the order they were made.</div>
-      </div>`;
-    meta.textContent = '0 requests';
-    return;
+  const list=document.getElementById('log-list');
+  const meta=document.getElementById('log-meta');
+  if(!list) return;
+  if(!entries||!entries.length){
+    const msg=IS_ADMIN?'No requests in the queue yet.':'You have not submitted any requests yet.';
+    list.innerHTML=`<div class="log-empty"><div class="log-empty-icon">📋</div><div style="font-weight:600;color:var(--ink-muted);margin-bottom:4px">No requests yet</div><div style="font-size:12px">${msg}</div></div>`;
+    if(meta) meta.textContent='0 requests'; return;
   }
+  const sorted=[...entries].sort((a,b)=>{
+    const aC=a.status==='Closed'?1:0, bC=b.status==='Closed'?1:0;
+    if(aC!==bC) return aC-bC;
+    return String(a.submittedAt||'').localeCompare(String(b.submittedAt||''));
+  });
+  const openC=sorted.filter(e=>e.status!=='Closed').length;
+  if(meta) meta.textContent=`${openC} open · ${sorted.length-openC} closed`;
 
-  meta.textContent = `${requestLog.length} request${requestLog.length===1?'':'s'} · process top → bottom`;
+  list.innerHTML=sorted.map((e,idx)=>{
+    const items=e.items||[];
+    const itemCount=items.length;
+    const qtyTotal=items.reduce((s,it)=>s+(Number(it.qty)||0),0);
+    const skuPrev=items.slice(0,5).map(it=>`${escapeHtml(it.sku||'')}×${it.qty||1}`).join(' · ');
+    const more=items.length>5?` +${items.length-5} more`:'';
+    const dateStr=e.submittedAt?new Date(e.submittedAt).toLocaleString():'';
+    const own=e.aweOwner||e.owner||'—';
+    const tpY=e.thirdParty==='Yes';
+    const status=e.status||'Submitted';
+    const isLocked=LOCKED_STATUSES.includes(status);
+    const isClosed=status==='Closed';
+    const next=IS_ADMIN?nextStatus(status):null;
+    const showQA=IS_ADMIN&&QA_PANEL_STATUSES.includes(status);
 
-  list.innerHTML = requestLog.map((e, idx) => {
-    const itemCount = e.items.length;
-    const qtyTotal = e.items.reduce((s,it)=>s + (Number(it.qty)||0), 0);
-    const skuPreview = e.items.slice(0,6).map(it => `${escapeHtml(it.sku)}${it.isBom?'(bundle)':''}×${it.qty}`).join(' · ');
-    const more = e.items.length > 6 ? ` · +${e.items.length-6} more` : '';
-    const dateStr = e.submittedAt ? new Date(e.submittedAt).toLocaleString() : (e.date||'');
-    const own = e.aweOwner || e.owner || '—';
-    const tpY = e.thirdParty === 'Yes';
-    return `
-      <div class="log-entry">
-        <div class="log-num">${idx+1}</div>
-        <div class="log-body">
-          <div class="log-row1">
-            <span class="log-req">${escapeHtml(own)}</span>
-            ${tpY ? `<span class="log-pill" style="background:#fff4e1;color:#8a5c00">3rd Party</span>` : ''}
-            <span class="log-pill ${purposeClass(e.purpose)}">${escapeHtml(e.purpose || '')}</span>
-          </div>
-          <div class="log-row2">
-            <span><strong>${itemCount}</strong> item${itemCount===1?'':'s'}</span>
-            <span><strong>${qtyTotal}</strong> unit${qtyTotal===1?'':'s'}</span>
-            ${e.requiredBy ? `<span>Needed by <strong>${escapeHtml(e.requiredBy)}</strong></span>` : ''}
-            ${e.shippingRequired === 'Yes' ? `<span style="color:#1c5390;font-weight:600">📦 Ship</span>` : ''}
-            <span>${escapeHtml(dateStr)}</span>
-          </div>
-          <div class="log-skus">${escapeHtml(skuPreview)}${escapeHtml(more)}</div>
+    let advBtn='';
+    if(IS_ADMIN&&next){
+      if(status==='QA Inspection'){
+        const ready=canAdvanceFromQA(e);
+        const done=items.filter(it=>it.qaOutcome).length;
+        advBtn=ready
+          ?`<button class="le-btn advance" onclick="advanceStatus('${escapeAttr(e.id)}','${escapeAttr(next)}')">→ Move to Cin7 Processing</button>`
+          :`<span class="btn-advance-gated" title="Complete QA for all items first">⏸ QA pending ${done}/${itemCount}</span>`;
+      } else {
+        advBtn=`<button class="le-btn advance" onclick="advanceStatus('${escapeAttr(e.id)}','${escapeAttr(next)}')">→ Mark: ${escapeHtml(next)}</button>`;
+      }
+    }
+
+    const editBtn=(IS_ADMIN||!isLocked)
+      ?`<button class="le-btn edit" onclick="editLogEntry('${escapeAttr(e.id)}')">✎ Edit</button>`
+      :`<button class="le-btn" disabled>🔒 Locked</button>`;
+    const delBtn=IS_ADMIN?`<button class="le-btn delete" onclick="deleteLogEntry('${escapeAttr(e.id)}')">🗑</button>`:'';
+    const trackLink=`<a href="?req=${encodeURIComponent(e.id)}" style="font-size:10px;color:var(--accent);text-decoration:none">↗ Track</a>`;
+    const histPills=(e.statusHistory||[]).slice(-3).map(h=>`<span class="le-history-item">${escapeHtml(h.status)} · ${new Date(h.at).toLocaleDateString()}</span>`).join('');
+    const qaPanel=showQA?renderQAPanel(e):'';
+
+    return `<div class="queue-entry-wrap"><div class="log-entry-v2${isClosed?' is-closed':''}">
+      <div class="le-num">${idx+1}</div>
+      <div class="le-body">
+        <div class="le-row1">
+          <span class="le-owner">${escapeHtml(own)}</span>
+          <span class="status-pill ${statusClass(status)}">${escapeHtml(status)}</span>
+          ${tpY?`<span class="log-pill" style="background:#fff4e1;color:#8a5c00;padding:2px 7px;font-size:10px;font-weight:600;border-radius:4px">3rd Party</span>`:''}
+          <span class="log-pill ${purposeClass(e.purpose)}">${escapeHtml(e.purpose||'')}</span>
+          ${trackLink}
         </div>
-        <div class="log-actions">
-          <button class="log-edit" data-edit-id="${escapeAttr(e.id)}" title="Edit (loads into Builder)">✎ Edit</button>
-          <button class="log-delete" data-delete-id="${escapeAttr(e.id)}" title="Delete">🗑 Delete</button>
+        <div class="le-row2">
+          <span><strong>${itemCount}</strong> item${itemCount===1?'':'s'}</span>
+          <span><strong>${qtyTotal}</strong> unit${qtyTotal===1?'':'s'}</span>
+          ${e.requiredBy?`<span>Needed by <strong>${escapeHtml(e.requiredBy)}</strong></span>`:''}
+          ${e.shippingRequired==='Yes'?`<span style="color:#1c5390;font-weight:600">📦 Ship</span>`:''}
+          <span style="color:var(--ink-faint)">${escapeHtml(dateStr)}</span>
         </div>
-      </div>`;
+        <div class="le-skus">${escapeHtml(skuPrev)}${escapeHtml(more)}</div>
+        ${histPills?`<div class="le-history">${histPills}</div>`:''}
+      </div>
+      <div class="le-actions">
+        <div class="le-actions-row">${!isClosed?editBtn:''}${delBtn}</div>
+        ${advBtn?`<div class="le-actions-row">${advBtn}</div>`:''}
+      </div>
+    </div>${qaPanel}</div>`;
   }).join('');
 
-  list.querySelectorAll('[data-edit-id]').forEach(b =>
-    b.addEventListener('click', () => editLogEntry(b.dataset.editId)));
-  list.querySelectorAll('[data-delete-id]').forEach(b =>
-    b.addEventListener('click', () => deleteLogEntry(b.dataset.deleteId)));
+  sorted.forEach(e=>{ if(QA_PANEL_STATUSES.includes(e.status||'')) updateCloseoutUI(e.id); });
 }
+
+/* ============================================================
+   QA INSPECTION PANEL
+   ============================================================ */
+function renderQAPanel(entry){
+  const id=entry.id, isClosed=entry.status==='Closed';
+  const dis=isClosed?' disabled':'';
+  const items=entry.items||[];
+  const reviewed=items.filter(it=>it.qaOutcome).length;
+  const c7n=items.filter(it=>it.cin7ActionRequired==='Yes');
+  const c7d=c7n.filter(it=>it.cin7ActionCompleted);
+  const ready=canClose(entry);
+
+  const rows=items.map(it=>{
+    const oc=it.qaOutcome||'';
+    const ocBadge=oc?`<span class="qa-outcome-set ${qaOutcomeClass(oc)}">${escapeHtml(oc)}</span>`:'';
+    const cbId=`c7cb_${escapeAttr(id)}_${escapeAttr(it.sku||'')}`;
+    return `<div class="qa-item">
+      <div class="qa-item-header">
+        <span class="qa-item-sku">${escapeHtml(it.sku||'')}</span>
+        <span class="qa-item-name">${escapeHtml(it.productName||'')}${it.variantName?' · '+escapeHtml(it.variantName):''}</span>
+        <span class="qa-item-qty">×${it.qty||1}</span>${ocBadge}
+      </div>
+      <div class="qa-fields">
+        <div>
+          <span class="qa-field-label">QA Outcome <span style="color:var(--red)">*</span></span>
+          <select class="qa-field-select" data-req-id="${escapeAttr(id)}" data-sku="${escapeAttr(it.sku||'')}" data-field="qaOutcome" onchange="saveItemQA(this)"${dis}>
+            <option value="">Select outcome…</option>
+            <option value="Sellable — return to inventory"${oc==='Sellable — return to inventory'?' selected':''}>Sellable — return to inventory</option>
+            <option value="Damaged — move to damaged bucket"${oc==='Damaged — move to damaged bucket'?' selected':''}>Damaged — move to damaged bucket</option>
+            <option value="Missing / Not Returned"${oc==='Missing / Not Returned'?' selected':''}>Missing / Not Returned</option>
+            <option value="Other / Needs Review"${oc==='Other / Needs Review'?' selected':''}>Other / Needs Review</option>
+          </select>
+        </div>
+        <div>
+          <span class="qa-field-label">Cin7 Action Required</span>
+          <select class="qa-field-select" data-req-id="${escapeAttr(id)}" data-sku="${escapeAttr(it.sku||'')}" data-field="cin7ActionRequired" onchange="saveItemQA(this)"${dis}>
+            <option value="">Select…</option>
+            <option value="Yes"${it.cin7ActionRequired==='Yes'?' selected':''}>Yes</option>
+            <option value="No"${it.cin7ActionRequired==='No'?' selected':''}>No</option>
+          </select>
+        </div>
+        <div>
+          <span class="qa-field-label">Processed By</span>
+          <input class="qa-field-input" type="text" placeholder="Name" value="${escapeAttr(it.processedBy||'')}" data-req-id="${escapeAttr(id)}" data-sku="${escapeAttr(it.sku||'')}" data-field="processedBy" onchange="saveItemQA(this)"${dis}>
+        </div>
+        <div>
+          <span class="qa-field-label">Processed Date</span>
+          <input class="qa-field-input" type="date" value="${escapeAttr(it.processedDate||'')}" data-req-id="${escapeAttr(id)}" data-sku="${escapeAttr(it.sku||'')}" data-field="processedDate" onchange="saveItemQA(this)"${dis}>
+        </div>
+        <div class="full">
+          <span class="qa-field-label">Notes</span>
+          <input class="qa-field-input" type="text" placeholder="Optional notes" value="${escapeAttr(it.qaNotes||'')}" data-req-id="${escapeAttr(id)}" data-sku="${escapeAttr(it.sku||'')}" data-field="qaNotes" onchange="saveItemQA(this)"${dis}>
+        </div>
+        <div class="full">
+          <div class="qa-check-row">
+            <input type="checkbox" id="${cbId}" data-req-id="${escapeAttr(id)}" data-sku="${escapeAttr(it.sku||'')}" data-field="cin7ActionCompleted" onchange="saveItemQA(this)"${it.cin7ActionCompleted?' checked':''}${dis}>
+            <label for="${cbId}">Cin7 Action Completed</label>
+            ${it.cin7ActionCompleted?'<span style="font-size:10px;color:var(--green);margin-left:6px;font-weight:600">✓ Done</span>':''}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const closeBtn=!isClosed
+    ?`<button class="btn-close-req" id="qa-close-btn-${escapeAttr(id)}" onclick="closeRequest('${escapeAttr(id)}')" disabled>✓ Close Request</button>`
+    :`<span style="font-size:11px;font-weight:700;color:var(--green)">✓ Closed</span>`;
+
+  return `<div class="qa-panel" id="qa-panel-${escapeAttr(id)}">
+    <div class="qa-panel-header">
+      <span class="qa-panel-title">🔍 QA Inspection &amp; Closeout Record</span>
+      <span class="qa-progress-text${reviewed===items.length?' all-done':''}" id="qa-progress-${escapeAttr(id)}">${reviewed}/${items.length} items reviewed · ${c7d.length}/${c7n.length} Cin7 done</span>
+    </div>
+    ${rows}
+    <div class="qa-closeout-bar">
+      <span class="qa-closeout-status${ready?' ready':''}" id="qa-closeout-status-${escapeAttr(id)}">${ready?'✓ All items reviewed — ready to close':`${items.length-reviewed} item${items.length-reviewed===1?'':'s'} need QA outcome${c7n.length-c7d.length>0?' · '+(c7n.length-c7d.length)+' Cin7 action'+(c7n.length-c7d.length===1?'':'s')+' pending':''}`}</span>
+      ${closeBtn}
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   SAVE ITEM QA FIELD
+   ============================================================ */
+function saveItemQA(el){
+  const reqId=el.dataset.reqId, sku=el.dataset.sku, field=el.dataset.field;
+  const value=el.type==='checkbox'?el.checked:el.value;
+  const entry=requestLog.find(e=>e.id===reqId); if(!entry) return;
+  const item=(entry.items||[]).find(it=>it.sku===sku); if(!item) return;
+  item[field]=value;
+  updateCloseoutUI(reqId);
+  if(field==='qaOutcome'){
+    const itemDiv=el.closest('.qa-item');
+    if(itemDiv){
+      let badge=itemDiv.querySelector('.qa-outcome-set');
+      if(value){ if(!badge){badge=document.createElement('span');badge.className='qa-outcome-set';itemDiv.querySelector('.qa-item-header').appendChild(badge);} badge.className='qa-outcome-set '+qaOutcomeClass(value); badge.textContent=value; }
+      else if(badge) badge.remove();
+    }
+  }
+  if(!saveItemQA._t) saveItemQA._t={};
+  clearTimeout(saveItemQA._t[reqId]);
+  saveItemQA._t[reqId]=setTimeout(async()=>{
+    try{ await apiFetch('',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:reqId,items:entry.items,_by:'ops'})}); }
+    catch(err){ console.warn('QA save failed',err); }
+  },800);
+}
+
+function updateCloseoutUI(reqId){
+  const entry=requestLog.find(e=>e.id===reqId); if(!entry) return;
+  const items=entry.items||[];
+  const reviewed=items.filter(it=>it.qaOutcome).length;
+  const c7n=items.filter(it=>it.cin7ActionRequired==='Yes');
+  const c7d=c7n.filter(it=>it.cin7ActionCompleted);
+  const ready=canClose(entry);
+  const prog=document.getElementById(`qa-progress-${reqId}`);
+  if(prog){prog.textContent=`${reviewed}/${items.length} items reviewed · ${c7d.length}/${c7n.length} Cin7 done`; prog.className='qa-progress-text'+(reviewed===items.length?' all-done':'');}
+  const stat=document.getElementById(`qa-closeout-status-${reqId}`);
+  if(stat){stat.className='qa-closeout-status'+(ready?' ready':''); stat.textContent=ready?'✓ All items reviewed — ready to close':`${items.length-reviewed} item${items.length-reviewed===1?'':'s'} need QA outcome${c7n.length-c7d.length>0?' · '+(c7n.length-c7d.length)+' Cin7 action'+(c7n.length-c7d.length===1?'':'s')+' pending':'`+'}';}
+  const btn=document.getElementById(`qa-close-btn-${reqId}`); if(btn) btn.disabled=!ready;
+}
+
+async function closeRequest(reqId){
+  const entry=requestLog.find(e=>e.id===reqId); if(!entry){toast('Not found');return;}
+  if(!canClose(entry)){toast('Complete QA and Cin7 for all items first');return;}
+  if(!confirm('Close this request? This marks the chain of custody as complete.')) return;
+  await advanceStatus(reqId,'Closed');
+}
+
 
 /* ============================================================
    EXPORT XLSX — with embedded hero images (ExcelJS)
