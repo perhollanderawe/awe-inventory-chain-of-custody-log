@@ -54,11 +54,11 @@ export default async (req) => {
       const record = {
         ...body,
         id,
-        status: body.status || "Submitted",
+        status: body.status || "Requested",
         submittedAt: body.submittedAt || now,
         updatedAt: now,
         statusHistory: body.statusHistory || [
-          { status: "Submitted", at: now, by: "requester" },
+          { status: "Requested", at: now, by: "requester" },
         ],
       };
       await store.set(id, JSON.stringify(record));
