@@ -2099,6 +2099,8 @@ function opsSignOut(){
   buildViewToggle();
   toast('Signed out');
   if(document.getElementById('log-view')?.classList.contains('active')) loadMyRequests();
+}
+
 
 /* ============================================================
    RETURNS TRIAGE (Phase 3)
@@ -2498,7 +2500,6 @@ function renderDashboard(){
   }
 }
 
-}
 </script>
 <!-- Ops Auth Dialog -->
 <dialog id="auth-dialog" class="auth-dialog">
