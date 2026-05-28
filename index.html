@@ -213,7 +213,7 @@ button{font-family:inherit}
 .kc-csv-btn{font-size:11px;padding:3px 8px;background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:4px;cursor:pointer}
 .kanban-empty{padding:24px;text-align:center;color:var(--ink-faint);font-size:12px}
 /* Pick modal */
-.pick-modal{max-width:480px;width:90vw;border-radius:10px;border:1px solid var(--border);padding:0;background:var(--surface);box-shadow:0 8px 32px rgba(0,0,0,.15)}
+.pick-modal{max-width:480px;width:90vw;margin:auto;border-radius:10px;border:1px solid var(--border);padding:0;background:var(--surface);box-shadow:0 8px 32px rgba(0,0,0,.15)}
 .pick-modal::backdrop{background:rgba(0,0,0,.45)}
 .pick-modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .pick-modal-title{font-size:15px;font-weight:700;color:var(--ink)}
@@ -917,7 +917,7 @@ function canAdvanceFromQA(entry){ return (entry.items||[]).every(it=>it.qaOutcom
 function canClose(entry){
   const items=entry.items||[];
   if(!items.length) return false;
-  return items.every(it=>it.qaOutcome);
+  return items.every(it=>it.qaOutcome) && !!entry.cin7Completed;
 }
 let lastSubmittedId=null;
 
@@ -1775,8 +1775,12 @@ function renderQAPanel(entry){
       <span class="qa-progress-text${reviewed===items.length?' all-done':''}" id="qa-progress-${escapeAttr(id)}">${reviewed}/${items.length} reviewed</span>
     </div>
     ${rows}
+    <div class="qa-cin7-row" style="display:flex;align-items:center;gap:8px;padding:10px 18px;border-top:1px solid var(--border);background:var(--bg)">
+      <input type="checkbox" id="cin7-order-${escapeAttr(id)}" ${entry.cin7Completed?'checked':''} ${isClosed?'disabled':''} onchange="saveOrderCin7('${escapeAttr(id)}',this.checked)" style="width:16px;height:16px;cursor:pointer">
+      <label for="cin7-order-${escapeAttr(id)}" style="font-size:12px;font-weight:600;color:var(--ink-muted);cursor:pointer">Cin7 transfer completed</label>
+    </div>
     <div class="qa-closeout-bar">
-      <span class="qa-closeout-status${ready?' ready':''}" id="qa-closeout-status-${escapeAttr(id)}">${ready?'✓ All items reviewed — ready to close':`${items.length-reviewed} item${items.length-reviewed===1?'':'s'} pending`}</span>
+      <span class="qa-closeout-status${ready?' ready':''}" id="qa-closeout-status-${escapeAttr(id)}">${ready?'✓ Ready to close':!items.every(it=>it.qaOutcome)?`${items.length-reviewed} item${items.length-reviewed===1?'':'s'} pending QA`:'QA complete — Cin7 transfer required'}</span>
       ${closeBtn}
     </div>
   </div>`;
@@ -1815,9 +1819,23 @@ function updateCloseoutUI(reqId){
   const ready=canClose(entry);
   const prog=document.getElementById(`qa-progress-${reqId}`);
   if(prog){prog.textContent=`${reviewed}/${items.length} reviewed`; prog.className='qa-progress-text'+(reviewed===items.length?' all-done':'');}
+  const _allQA=items.every(it=>it.qaOutcome);
   const stat=document.getElementById(`qa-closeout-status-${reqId}`);
-  if(stat){stat.className='qa-closeout-status'+(ready?' ready':''); stat.textContent=ready?'✓ All items reviewed — ready to close':`${items.length-reviewed} item${items.length-reviewed===1?'':'s'} pending`; }
+  if(stat){stat.className='qa-closeout-status'+(ready?' ready':''); stat.textContent=ready?'✓ Ready to close':!_allQA?`${items.length-reviewed} item${items.length-reviewed===1?'':'s'} pending QA`:'QA complete — Cin7 transfer required'; }
+  const cin7box=document.getElementById(`cin7-order-${reqId}`);
+  if(cin7box) cin7box.checked=!!entry.cin7Completed;
   const btn=document.getElementById(`qa-close-btn-${reqId}`); if(btn) btn.classList.toggle('gated',!ready);
+}
+
+function saveOrderCin7(reqId, checked){
+  const entry=requestLog.find(e=>e.id===reqId); if(!entry) return;
+  entry.cin7Completed=checked;
+  updateCloseoutUI(reqId);
+  clearTimeout(saveOrderCin7._t);
+  saveOrderCin7._t=setTimeout(async()=>{
+    try{ await apiFetch('',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:reqId,cin7Completed:checked,_by:'ops'})}); }
+    catch(err){ console.warn('Cin7 save failed',err); }
+  },600);
 }
 
 async function closeRequest(reqId){
@@ -1826,6 +1844,7 @@ async function closeRequest(reqId){
     const items=entry.items||[];
     const missingQA=items.filter(it=>!it.qaOutcome).length;
     if(missingQA>0) toast(`${missingQA} item${missingQA===1?'':'s'} still need a QA outcome`);
+    else if(!entry.cin7Completed) toast('Mark Cin7 transfer as completed before closing');
     else toast('Complete all required fields before closing');
     return;
   }
@@ -2308,7 +2327,7 @@ function renderKanban(){
   const PICK_STATUSES    = ['Submitted'];
   const OUT_STATUSES     = ['Inventory Pulled','Packed','Shipped'];
   const PARTIAL_STATUSES = [];
-  const RET_STATUSES     = ['Returned / Under QA','Closed'];
+  const RET_STATUSES     = ['Returned / Under QA'];
 
   const groups = {
     pick:    requestLog.filter(e=>PICK_STATUSES.includes(e.status)),
@@ -2424,6 +2443,16 @@ async function submitMarkShipped(){
   const handoffDate   = document.getElementById('ship-modal-handoffdate').value;
   const pickedUpBy    = document.getElementById('ship-modal-pickedupby').value.trim();
   const shipNotes     = document.getElementById('ship-modal-notes').value.trim();
+  const _smEntry = requestLog.find(e=>e.id===id);
+  const _isShip = _smEntry?.shippingRequired==='Yes';
+  if(_isShip){
+    if(!carrier){ toast('Carrier is required'); return; }
+    if(!trackingNumber){ toast('Tracking number is required'); return; }
+    if(!shipDate){ toast('Ship date is required'); return; }
+  } else {
+    if(!handoffDate){ toast('Handoff / pickup date is required'); return; }
+    if(!pickedUpBy){ toast('Picked up by / handed to is required'); return; }
+  }
   try {
     const updated = await apiFetch('',{method:'PATCH',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({id,status:'Shipped',carrier,trackingNumber,shipDate,handoffDate,pickedUpBy,shipNotes,_by:'ops'})});
