@@ -220,10 +220,11 @@ button{font-family:inherit}
 .req-summary-val{font-weight:600;color:var(--ink)}
 /* Export bar: full width */
 .export-summary .req-summary-box{display:block}
-/* Track detail: full width with top separator */
-.srp-items .req-summary-box{display:block;margin-top:10px;padding-top:8px;border-top:1px solid var(--border-faint);border-left:none;border-right:none;border-bottom:none;border-radius:0;padding-left:0;padding-right:0;min-width:0}
+/* Track detail: natural inline-block, left-aligned, top spacing */
+.srp-items .req-summary-box{margin-top:10px}
 /* Queue dedicated row */
 .le-req-summary{margin:2px 0 4px}
+.le-req-summary .req-summary-box{margin-left:0}
 /* Pick modal */
 .pick-modal{max-width:480px;width:90vw;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:10px;border:1px solid var(--border);padding:0;background:var(--surface);box-shadow:0 8px 32px rgba(0,0,0,.15)}
 .pick-modal::backdrop{background:rgba(0,0,0,.45)}
@@ -563,7 +564,7 @@ button{font-family:inherit}
         <h2>Search &amp; Build Request</h2>
         <div class="section-divider"></div>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;margin-top:5px;margin-bottom:2px;gap:16px">
+      <div style="display:flex;align-items:flex-start;gap:24px;margin-top:5px;margin-bottom:2px">
         <div>
           <div style="font-size:10px;color:var(--ink-muted);font-weight:500;margin-bottom:6px">Active products only · Click any SKU to copy</div>
           <div style="display:flex;flex-direction:column;gap:5px">
