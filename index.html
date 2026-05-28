@@ -568,7 +568,7 @@ button{font-family:inherit}
         <h2>Search &amp; Build Request</h2>
         <div class="section-divider"></div>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:18px;margin-top:5px;margin-bottom:2px">
+      <div style="display:flex;align-items:center;gap:18px;margin-top:5px;margin-bottom:2px">
         <div>
           <div style="font-size:10px;color:var(--ink-muted);font-weight:500;margin-bottom:6px">Active products only · Click any SKU to copy</div>
           <div style="display:flex;flex-direction:column;gap:5px">
@@ -1327,7 +1327,7 @@ function buildSummaryBox(n,q,r,c,hasP){
     +'<div class="req-summary-row"><span class="req-summary-label">Line items:</span><span class="req-summary-val">'+n+'</span></div>'
     +'<div class="req-summary-row"><span class="req-summary-label">Total units:</span><span class="req-summary-val">'+q+'</span></div>'
     +(hasP?'<div class="req-summary-row"><span class="req-summary-label">Retail value:</span><span class="req-summary-val">$'+r.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})+'</span></div>':'')
-    +(hasP?'<div class="req-summary-row"><span class="req-summary-label">Cost value:</span><span class="req-summary-val">$'+c.toFixed(2)+'</span></div>':'')
+    +(hasP?'<div class="req-summary-row"><span class="req-summary-label">Cost value:</span><span class="req-summary-val">$'+c.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'</span></div>':'')
     +'</div>';
 }
 
