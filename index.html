@@ -220,11 +220,11 @@ button{font-family:inherit}
 .req-summary-val{font-weight:600;color:var(--ink)}
 /* Export bar: full width */
 .export-summary .req-summary-box{display:block}
-/* Track detail: natural inline-block, left-aligned, top spacing */
-.srp-items .req-summary-box{margin-top:10px}
+/* Track detail: block left-edge aligned with srp-rows and item rows */
+.srp-items .req-summary-box{display:block;width:fit-content;margin:10px 0 0}
 /* Queue dedicated row */
 .le-req-summary{margin:2px 0 4px}
-.le-req-summary .req-summary-box{margin-left:0}
+.le-req-summary .req-summary-box{display:block;width:fit-content;margin:0}
 /* Pick modal */
 .pick-modal{max-width:480px;width:90vw;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:10px;border:1px solid var(--border);padding:0;background:var(--surface);box-shadow:0 8px 32px rgba(0,0,0,.15)}
 .pick-modal::backdrop{background:rgba(0,0,0,.45)}
@@ -564,16 +564,14 @@ button{font-family:inherit}
         <h2>Search &amp; Build Request</h2>
         <div class="section-divider"></div>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:24px;margin-top:5px;margin-bottom:2px">
-        <div>
-          <div style="font-size:10px;color:var(--ink-muted);font-weight:500;margin-bottom:6px">Active products only · Click any SKU to copy</div>
-          <div style="display:flex;flex-direction:column;gap:5px">
-            <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-muted)"><span class="bundle-badge" style="margin-left:0">BOM</span>Bundle SKU / multiple items</div>
-            <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-muted)"><span class="bundle-badge component-badge" style="margin-left:0">COMPONENT</span>Single item SKU</div>
-          </div>
+      <div style="margin-top:5px;margin-bottom:4px">
+        <div style="font-size:10px;color:var(--ink-muted);font-weight:500;margin-bottom:6px">Active products only · Click any SKU to copy</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-muted)"><span class="bundle-badge" style="margin-left:0">BOM</span>Bundle SKU / multiple items</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-muted)"><span class="bundle-badge component-badge" style="margin-left:0">COMPONENT</span>Single item SKU</div>
         </div>
-        <div id="builder-summary-box" style="min-width:210px"></div>
       </div>
+      <div id="builder-summary-box" style="min-width:210px;margin-bottom:6px"></div>
     </div>
 
     <div class="card">
