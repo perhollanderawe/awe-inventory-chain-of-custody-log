@@ -212,6 +212,12 @@ button{font-family:inherit}
 .kc-pick-btn:hover{opacity:.85}
 .kc-csv-btn{font-size:11px;padding:3px 8px;background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:4px;cursor:pointer}
 .kanban-empty{padding:24px;text-align:center;color:var(--ink-faint);font-size:12px}
+/* Request Summary box */
+.req-summary-box{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin:8px 0}
+.req-summary-title{font-size:11px;font-weight:700;color:var(--ink);margin-bottom:6px;letter-spacing:.2px}
+.req-summary-row{display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;gap:16px}
+.req-summary-label{font-size:12px;color:var(--ink-muted)}
+.req-summary-val{font-size:13px;font-weight:700;color:var(--ink)}
 /* Pick modal */
 .pick-modal{max-width:480px;width:90vw;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:10px;border:1px solid var(--border);padding:0;background:var(--surface);box-shadow:0 8px 32px rgba(0,0,0,.15)}
 .pick-modal::backdrop{background:rgba(0,0,0,.45)}
@@ -700,7 +706,8 @@ button{font-family:inherit}
       </div>
       <div class="export-bar">
         <div class="export-summary">
-          <strong id="export-item-count">0</strong> line items - <strong id="export-qty-count">0</strong> total units<br><span id="export-price-summary" style="font-weight:700;color:var(--ink)"></span>
+          <span style="display:none" id="export-item-count">0</span><span style="display:none" id="export-qty-count">0</span><span style="display:none" id="export-price-summary"></span>
+          <div id="export-req-summary-box"></div>
         </div>
         <div class="export-actions-v2">
           <button class="btn-secondary" id="export-word-btn" disabled title="PDF export" style="flex:1">PDF Export</button>
@@ -1245,6 +1252,8 @@ function renderCart(){
     if (_tb) _tb.style.display = 'none';
     const _eps0=document.getElementById('export-price-summary');
     if(_eps0) _eps0.textContent='';
+    const _exs0=document.getElementById('export-req-summary-box');
+    if(_exs0) _exs0.innerHTML='';
     renderTallyBar();
     return;
   }
@@ -1296,6 +1305,16 @@ function renderCart(){
   renderCartSummary();
 }
 
+function buildSummaryBox(n,q,r,c,hasP){
+  return '<div class="req-summary-box">'
+    +'<div class="req-summary-title">Request Summary</div>'
+    +'<div class="req-summary-row"><span class="req-summary-label">Line items:</span><span class="req-summary-val">'+n+'</span></div>'
+    +'<div class="req-summary-row"><span class="req-summary-label">Total units:</span><span class="req-summary-val">'+q+'</span></div>'
+    +(hasP?'<div class="req-summary-row"><span class="req-summary-label">Retail value:</span><span class="req-summary-val">$'+r.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})+'</span></div>':'')
+    +(hasP?'<div class="req-summary-row"><span class="req-summary-label">Cost value:</span><span class="req-summary-val">$'+c.toFixed(2)+'</span></div>':'')
+    +'</div>';
+}
+
 function renderCartSummary(){
   const items = Array.from(cart.values());
   let qtyTotal = 0; items.forEach(it => qtyTotal += Number(it.qty)||0);
@@ -1312,25 +1331,13 @@ function renderCartSummary(){
   }
   const _priceSfx = hasPricing ? ` · Retail $${retailTotal.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})} · Cost $${costTotal.toFixed(2)}` : '';
   const _cse=document.getElementById('cart-sub');
-  if(_cse){
-    const _c1=`${items.length} line item${items.length===1?'':'s'} - ${qtyTotal} total unit${qtyTotal===1?'':'s'}`;
-    const _c2=hasPricing&&items.length>0?`Retail $${retailTotal.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})} · Cost $${costTotal.toFixed(2)}`:'';
-    _cse.innerHTML=_c2?`<div>${_c1}</div><div style="font-weight:700">${_c2}</div>`:_c1;
-  }
-  const totalsBar = document.getElementById('cart-totals-bar');
-  if (totalsBar) {
-    if (hasPricing && items.length > 0) {
-      totalsBar.style.display = 'flex';
-      document.getElementById('cart-retail-total').textContent = '$' + retailTotal.toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits:0});
-      document.getElementById('cart-cost-total').textContent   = '$' + costTotal.toFixed(2);
-    } else {
-      totalsBar.style.display = 'none';
-    }
-  }
+  if(_cse) _cse.innerHTML=items.length>0?buildSummaryBox(items.length,qtyTotal,retailTotal,costTotal,hasPricing):'No items yet';
+  const totalsBar=document.getElementById('cart-totals-bar');
+  if(totalsBar) totalsBar.style.display='none';
   const _eps=document.getElementById('export-price-summary');
-  if(_eps) _eps.textContent = hasPricing && items.length>0
-    ? `Retail $${retailTotal.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})} · Cost $${costTotal.toFixed(2)}`
-    : '';
+  if(_eps) _eps.textContent='';
+  const _exs=document.getElementById('export-req-summary-box');
+  if(_exs) _exs.innerHTML=items.length>0?buildSummaryBox(items.length,qtyTotal,retailTotal,costTotal,hasPricing):'';
   renderTallyBar();
 }
 
@@ -1613,7 +1620,7 @@ function renderSingleReq(req,panel){
   const _srpAddrBlock=(req.shippingRequired==='Yes'&&(_sd.name||_sd.street))
     ?`<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-faint)"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:8px">Shipping Address</div>${_sd.name?`<div class=\"srp-row\"><span class=\"srp-label\">Recipient</span><span class=\"srp-val\">${escapeHtml(_sd.name)}</span></div>`:''}${_sd.street?`<div class=\"srp-row\"><span class=\"srp-label\">Address</span><span class=\"srp-val\">${escapeHtml(_sd.street)}</span></div>`:''}${(_sd.city||_sd.state||_sd.zip)?`<div class=\"srp-row\"><span class=\"srp-label\">City / State / ZIP</span><span class=\"srp-val\">${[_sd.city,_sd.state,_sd.zip].filter(Boolean).map(escapeHtml).join(', ')}</span></div>`:''}${_sd.country?`<div class=\"srp-row\"><span class=\"srp-label\">Country</span><span class=\"srp-val\">${escapeHtml(_sd.country)}</span></div>`:''}${_sd.email?`<div class=\"srp-row\"><span class=\"srp-label\">Email</span><span class=\"srp-val\">${escapeHtml(_sd.email)}</span></div>`:''}${_sd.phone?`<div class=\"srp-row\"><span class=\"srp-label\">Phone</span><span class=\"srp-val\">${escapeHtml(_sd.phone)}</span></div>`:''}</div>`
     :'';
-  const _srpValueSummary=`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border-faint);font-size:12px;color:var(--ink)"><div style="font-weight:600">${_srpItems.length} line item${_srpItems.length===1?'':'s'} - ${_srpQty} total unit${_srpQty===1?'':'s'}</div>${_srpHP?`<div style="font-weight:700">Retail $${_srpR.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})} · Cost $${_srpC.toFixed(2)}</div>`:''}</div>`;
+  const _srpValueSummary=buildSummaryBox(_srpItems.length,_srpQty,_srpR,_srpC,_srpHP);
   const _srpShipBlock=(req.carrier||req.trackingNumber||req.shipDate||req.handoffDate||req.pickedUpBy||req.shipNotes)?`<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-faint)"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:8px">Shipping / Handoff Details</div>${req.carrier?`<div class="srp-row"><span class="srp-label">Carrier</span><span class="srp-val">${escapeHtml(req.carrier)}</span></div>`:''} ${req.trackingNumber?`<div class="srp-row"><span class="srp-label">Tracking #</span><span class="srp-val">${escapeHtml(req.trackingNumber)}</span></div>`:''} ${req.shipDate?`<div class="srp-row"><span class="srp-label">Ship Date</span><span class="srp-val">${escapeHtml(req.shipDate)}</span></div>`:''} ${req.handoffDate?`<div class="srp-row"><span class="srp-label">Handoff Date</span><span class="srp-val">${escapeHtml(req.handoffDate)}</span></div>`:''} ${req.pickedUpBy?`<div class="srp-row"><span class="srp-label">Picked Up By</span><span class="srp-val">${escapeHtml(req.pickedUpBy)}</span></div>`:''} ${req.shipNotes?`<div class="srp-row"><span class="srp-label">Notes</span><span class="srp-val">${escapeHtml(req.shipNotes)}</span></div>`:''}</div>`:'';
   panel.innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap"><div class="srp-title">Request Status</div>${statusPill}</div>${descs[status]?`<div style="font-size:12px;color:var(--ink-muted);margin-bottom:16px">${escapeHtml(descs[status])}</div>`:''}<div class="srp-id">${escapeHtml(req.id)}</div><div class="srp-row"><span class="srp-label">AWE Owner</span><span class="srp-val">${escapeHtml(req.aweOwner||req.owner||'—')}</span></div><div class="srp-row"><span class="srp-label">Purpose</span><span class="srp-val">${escapeHtml(req.purpose||'—')}</span></div><div class="srp-row"><span class="srp-label">Requested For</span><span class="srp-val">${escapeHtml(req.requestedFor||req.thirdParty||'—')}</span></div><div class="srp-row"><span class="srp-label">Required By</span><span class="srp-val">${escapeHtml(req.requiredBy||'—')}</span></div>${req.returnBy?`<div class="srp-row"><span class="srp-label">Return By</span><span class="srp-val">${escapeHtml(req.returnBy)}</span></div>`:''} ${req.packaging?`<div class="srp-row"><span class="srp-label">Packaging</span><span class="srp-val">${escapeHtml(req.packaging)}</span></div>`:''} ${(req.urgent)?`<div class="srp-row"><span class="urgent-badge">&#9889; Urgent</span></div>`:''}<div class="srp-row"><span class="srp-label">Submitted</span><span class="srp-val">${escapeHtml(new Date(req.submittedAt||'').toLocaleString())}</span></div><div class="srp-items">${items}${_srpValueSummary}</div><div class="history-timeline"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:8px">Status history</div>${history||'<div style="font-size:11px;color:var(--ink-faint)">No history</div>'}</div>${_srpAddrBlock}${_srpShipBlock}<div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--border-faint)">${editBtn}</div>`;
 }
@@ -1720,8 +1727,7 @@ function renderQueueData(entries){
           ${trackLink}
         </div>
         <div class="le-row2">
-          <span><strong>${itemCount}</strong> line item${itemCount===1?'':'s'} - <strong>${qtyTotal}</strong> total unit${qtyTotal===1?'':'s'}</span>
-          ${_qHP?`<span>Retail <strong>$${_qR.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})}</strong> · Cost <strong>$${_qC.toFixed(2)}</strong></span>`:''}
+          ${buildSummaryBox(itemCount,qtyTotal,_qR,_qC,_qHP)}
           ${e.requiredBy?`<span>Pickup by <strong>${escapeHtml(e.requiredBy)}</strong></span>`:''}
           ${e.arrivalBy?`<span>Arrive by <strong>${escapeHtml(e.arrivalBy)}</strong></span>`:''}
           ${e.shippingRequired==='Yes'?`<span style="color:#1c5390;font-weight:600">📦 Ship</span>`:''}
@@ -2651,15 +2657,15 @@ function renderDashboard(){
   <div class="pick-modal-body">
     <div id="ship-modal-req-info" style="font-size:12px;color:var(--ink-muted);padding:6px 10px;background:var(--bg);border-radius:6px;margin-bottom:4px"></div>
     <div class="pick-field" id="ship-modal-carrier-row">
-      <label>Carrier</label>
+      <label>Carrier <span class="required-mark">*</span></label>
       <input type="text" id="ship-modal-carrier" placeholder="e.g. FedEx, UPS, DHL">
     </div>
     <div class="pick-field" id="ship-modal-tracking-row">
-      <label>Tracking Number</label>
+      <label>Tracking Number <span class="required-mark">*</span></label>
       <input type="text" id="ship-modal-tracking" placeholder="Tracking number">
     </div>
     <div class="pick-field" id="ship-modal-shipdate-row">
-      <label>Ship Date</label>
+      <label>Ship Date <span class="required-mark">*</span></label>
       <input type="date" id="ship-modal-shipdate">
     </div>
     <div class="pick-field" id="ship-modal-handoffdate-row">
