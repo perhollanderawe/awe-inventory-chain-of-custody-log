@@ -213,7 +213,7 @@ button{font-family:inherit}
 .kc-csv-btn{font-size:11px;padding:3px 8px;background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:4px;cursor:pointer}
 .kanban-empty{padding:24px;text-align:center;color:var(--ink-faint);font-size:12px}
 /* Pick modal */
-.pick-modal{max-width:480px;width:90vw;margin:auto;border-radius:10px;border:1px solid var(--border);padding:0;background:var(--surface);box-shadow:0 8px 32px rgba(0,0,0,.15)}
+.pick-modal{max-width:480px;width:90vw;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:10px;border:1px solid var(--border);padding:0;background:var(--surface);box-shadow:0 8px 32px rgba(0,0,0,.15)}
 .pick-modal::backdrop{background:rgba(0,0,0,.45)}
 .pick-modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .pick-modal-title{font-size:15px;font-weight:700;color:var(--ink)}
@@ -701,7 +701,7 @@ button{font-family:inherit}
       <div class="export-bar">
         <div class="export-summary">
           <strong id="export-item-count">0</strong> items ·
-          <strong id="export-qty-count">0</strong> units
+          <strong id="export-qty-count">0</strong> units<span id="export-price-summary" style="color:var(--ink-muted)"></span>
         </div>
         <div class="export-actions-v2">
           <button class="btn-secondary" id="export-word-btn" disabled title="PDF export" style="flex:1">PDF Export</button>
@@ -1244,6 +1244,8 @@ function renderCart(){
     document.getElementById('export-qty-count').textContent = '0';
     const _tb = document.getElementById('cart-totals-bar');
     if (_tb) _tb.style.display = 'none';
+    const _eps0=document.getElementById('export-price-summary');
+    if(_eps0) _eps0.textContent='';
     renderTallyBar();
     return;
   }
@@ -1292,8 +1294,7 @@ function renderCart(){
     }));
 
   document.getElementById('export-item-count').textContent = items.length;
-  document.getElementById('export-qty-count').textContent = qtyTotal;
-  renderTallyBar();
+  renderCartSummary();
 }
 
 function renderCartSummary(){
@@ -1322,6 +1323,10 @@ function renderCartSummary(){
       totalsBar.style.display = 'none';
     }
   }
+  const _eps=document.getElementById('export-price-summary');
+  if(_eps) _eps.textContent = hasPricing && items.length>0
+    ? ` · Retail $${retailTotal.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})} · Cost $${costTotal.toFixed(2)}`
+    : '';
   renderTallyBar();
 }
 
@@ -1600,8 +1605,15 @@ function renderSingleReq(req,panel){
   if(typeof PRICING!=='undefined'){_srpItems.forEach(it=>{const _p=PRICING[it.sku]||{};const _q=Number(it.qty)||1;if(_p.retail!=null){_srpR+=_p.retail*_q;_srpHP=true;}if(_p.cost!=null)_srpC+=_p.cost*_q;});}
   const _srpPfx=_srpHP?` · Retail $${_srpR.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})} · Cost $${_srpC.toFixed(2)}`:''
 ;  const items=_srpItems.map(it=>`<div class="srp-item-row"><div class="srp-item-sku">${escapeHtml(it.sku||'')}</div><div class="srp-item-name">${escapeHtml(it.productName||'')}${it.variantName?' · '+escapeHtml(it.variantName):''}</div><div class="srp-item-qty">×${it.qty||1}</div></div>`).join('');
+  const _sd=req.shipDetails||{};
+  const _srpAddrBlock=(req.shippingRequired==='Yes'&&(_sd.name||_sd.street))
+    ?`<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-faint)"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:8px">Shipping Address</div>${_sd.name?`<div class=\"srp-row\"><span class=\"srp-label\">Recipient</span><span class=\"srp-val\">${escapeHtml(_sd.name)}</span></div>`:''}${_sd.street?`<div class=\"srp-row\"><span class=\"srp-label\">Address</span><span class=\"srp-val\">${escapeHtml(_sd.street)}</span></div>`:''}${(_sd.city||_sd.state||_sd.zip)?`<div class=\"srp-row\"><span class=\"srp-label\">City / State / ZIP</span><span class=\"srp-val\">${[_sd.city,_sd.state,_sd.zip].filter(Boolean).map(escapeHtml).join(', ')}</span></div>`:''}${_sd.country?`<div class=\"srp-row\"><span class=\"srp-label\">Country</span><span class=\"srp-val\">${escapeHtml(_sd.country)}</span></div>`:''}${_sd.email?`<div class=\"srp-row\"><span class=\"srp-label\">Email</span><span class=\"srp-val\">${escapeHtml(_sd.email)}</span></div>`:''}${_sd.phone?`<div class=\"srp-row\"><span class=\"srp-label\">Phone</span><span class=\"srp-val\">${escapeHtml(_sd.phone)}</span></div>`:''}</div>`
+    :'';
+  const _srpValueSummary=_srpHP
+    ?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border-faint);font-size:12px;font-weight:700;color:var(--ink)">${_srpItems.length} item${_srpItems.length===1?'':'s'} · ${_srpQty} unit${_srpQty===1?'':'s'} · Retail $${_srpR.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})} · Cost $${_srpC.toFixed(2)}</div>`
+    :'';
   const _srpShipBlock=(req.carrier||req.trackingNumber||req.shipDate||req.handoffDate||req.pickedUpBy||req.shipNotes)?`<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-faint)"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:8px">Shipping / Handoff Details</div>${req.carrier?`<div class="srp-row"><span class="srp-label">Carrier</span><span class="srp-val">${escapeHtml(req.carrier)}</span></div>`:''} ${req.trackingNumber?`<div class="srp-row"><span class="srp-label">Tracking #</span><span class="srp-val">${escapeHtml(req.trackingNumber)}</span></div>`:''} ${req.shipDate?`<div class="srp-row"><span class="srp-label">Ship Date</span><span class="srp-val">${escapeHtml(req.shipDate)}</span></div>`:''} ${req.handoffDate?`<div class="srp-row"><span class="srp-label">Handoff Date</span><span class="srp-val">${escapeHtml(req.handoffDate)}</span></div>`:''} ${req.pickedUpBy?`<div class="srp-row"><span class="srp-label">Picked Up By</span><span class="srp-val">${escapeHtml(req.pickedUpBy)}</span></div>`:''} ${req.shipNotes?`<div class="srp-row"><span class="srp-label">Notes</span><span class="srp-val">${escapeHtml(req.shipNotes)}</span></div>`:''}</div>`:'';
-  panel.innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap"><div class="srp-title">Request Status</div>${statusPill}</div>${descs[status]?`<div style="font-size:12px;color:var(--ink-muted);margin-bottom:16px">${escapeHtml(descs[status])}</div>`:''}<div class="srp-id">${escapeHtml(req.id)}</div><div class="srp-row"><span class="srp-label">AWE Owner</span><span class="srp-val">${escapeHtml(req.aweOwner||req.owner||'—')}</span></div><div class="srp-row"><span class="srp-label">Purpose</span><span class="srp-val">${escapeHtml(req.purpose||'—')}</span></div><div class="srp-row"><span class="srp-label">Requested For</span><span class="srp-val">${escapeHtml(req.requestedFor||req.thirdParty||'—')}</span></div><div class="srp-row"><span class="srp-label">Required By</span><span class="srp-val">${escapeHtml(req.requiredBy||'—')}</span></div>${req.returnBy?`<div class="srp-row"><span class="srp-label">Return By</span><span class="srp-val">${escapeHtml(req.returnBy)}</span></div>`:''} ${req.packaging?`<div class="srp-row"><span class="srp-label">Packaging</span><span class="srp-val">${escapeHtml(req.packaging)}</span></div>`:''} ${(req.urgent)?`<div class="srp-row"><span class="urgent-badge">&#9889; Urgent</span></div>`:''}<div class="srp-row"><span class="srp-label">Submitted</span><span class="srp-val">${escapeHtml(new Date(req.submittedAt||'').toLocaleString())}</span></div><div class="srp-items"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:8px">${_srpItems.length} item${_srpItems.length===1?'':'s'} · ${_srpQty} unit${_srpQty===1?'':'s'}${_srpPfx}</div>${items}</div><div class="history-timeline"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:8px">Status history</div>${history||'<div style="font-size:11px;color:var(--ink-faint)">No history</div>'}</div>${_srpShipBlock}<div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--border-faint)">${editBtn}</div>`;
+  panel.innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap"><div class="srp-title">Request Status</div>${statusPill}</div>${descs[status]?`<div style="font-size:12px;color:var(--ink-muted);margin-bottom:16px">${escapeHtml(descs[status])}</div>`:''}<div class="srp-id">${escapeHtml(req.id)}</div><div class="srp-row"><span class="srp-label">AWE Owner</span><span class="srp-val">${escapeHtml(req.aweOwner||req.owner||'—')}</span></div><div class="srp-row"><span class="srp-label">Purpose</span><span class="srp-val">${escapeHtml(req.purpose||'—')}</span></div><div class="srp-row"><span class="srp-label">Requested For</span><span class="srp-val">${escapeHtml(req.requestedFor||req.thirdParty||'—')}</span></div><div class="srp-row"><span class="srp-label">Required By</span><span class="srp-val">${escapeHtml(req.requiredBy||'—')}</span></div>${req.returnBy?`<div class="srp-row"><span class="srp-label">Return By</span><span class="srp-val">${escapeHtml(req.returnBy)}</span></div>`:''} ${req.packaging?`<div class="srp-row"><span class="srp-label">Packaging</span><span class="srp-val">${escapeHtml(req.packaging)}</span></div>`:''} ${(req.urgent)?`<div class="srp-row"><span class="urgent-badge">&#9889; Urgent</span></div>`:''}<div class="srp-row"><span class="srp-label">Submitted</span><span class="srp-val">${escapeHtml(new Date(req.submittedAt||'').toLocaleString())}</span></div><div class="srp-items"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:8px">${_srpItems.length} item${_srpItems.length===1?'':'s'} · ${_srpQty} unit${_srpQty===1?'':'s'}${_srpPfx}</div>${items}${_srpValueSummary}</div><div class="history-timeline"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:8px">Status history</div>${history||'<div style="font-size:11px;color:var(--ink-faint)">No history</div>'}</div>${_srpAddrBlock}${_srpShipBlock}<div style="margin-top:18px;padding-top:12px;border-top:1px solid var(--border-faint)">${editBtn}</div>`;
 }
 
 function purposeClass(p){
