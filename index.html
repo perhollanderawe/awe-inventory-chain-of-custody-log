@@ -118,7 +118,7 @@ button,input,select,textarea{font-family:inherit}
 
 .requester-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border-faint);background:#fafafa}
 .field-label{font-size:10px;font-weight:600;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;display:block}
-.field-input{width:100%;border:1px solid var(--border);border-radius:5px;padding:6px 8px;font-size:12px;color:var(--ink);font-family:inherit;background:var(--surface);outline:none}
+.field-input{width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;color:var(--ink);font-family:inherit;background:var(--surface);outline:none}
 .field-input:focus{border-color:var(--accent)}
 .required-mark{color:var(--red)}
 
@@ -183,10 +183,10 @@ button,input,select,textarea{font-family:inherit}
 .returns-summary{font-size:11px;color:var(--ink-muted);margin-right:auto}
 .view-panel{display:none}.view-panel.active{display:block}
 /* Warehouse kanban */
-.warehouse-header{padding:18px 24px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px}
+.warehouse-header{padding:18px 0 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px}
 .warehouse-title{font-size:18px;font-weight:700;letter-spacing:-0.3px;color:var(--ink)}
 .warehouse-sub{font-size:12px;color:var(--ink-muted)}
-.kanban-board{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:20px 24px;min-height:400px;overflow-x:auto}
+.kanban-board{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:20px 0;min-height:400px;overflow-x:auto}
 @media(max-width:900px){.kanban-board{grid-template-columns:repeat(2,1fr)}}
 .kanban-col{background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
 .kanban-col-header{padding:10px 14px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
@@ -196,7 +196,7 @@ button,input,select,textarea{font-family:inherit}
 .kanban-col-header.col-returned{background:#f3e5f5;color:#6a1b9a}
 .kanban-count{margin-left:auto;background:var(--border);color:var(--ink-muted);font-size:11px;font-weight:700;padding:1px 6px;border-radius:10px}
 .kanban-cards{padding:10px;display:flex;flex-direction:column;gap:8px;flex:1;overflow-y:auto;max-height:70vh}
-.kanban-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;transition:box-shadow .15s}
+.kanban-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;cursor:pointer;transition:box-shadow .15s}
 .kanban-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.1)}
 .kc-name{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kc-meta{font-size:11px;color:var(--ink-muted);margin-bottom:4px}
@@ -211,7 +211,7 @@ button,input,select,textarea{font-family:inherit}
 .kanban-empty{padding:24px;text-align:center;color:var(--ink-faint);font-size:12px}
 /* Request Summary */
 .req-summary-box{display:inline-block;align-self:flex-start;border:1px solid var(--border-faint);border-radius:5px;padding:5px 10px;margin:3px 0 4px;min-width:150px}
-.req-summary-title{font-size:10px;font-weight:600;color:var(--ink-muted);margin-bottom:3px}
+.req-summary-title{font-size:10px;font-weight:600;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
 .req-summary-row{display:flex;align-items:baseline;gap:10px;margin-bottom:4px;font-size:13px}
 .req-summary-label{font-weight:600;color:var(--ink-muted);white-space:nowrap;min-width:80px}
 .req-summary-val{color:var(--ink)}
@@ -240,7 +240,7 @@ button,input,select,textarea{font-family:inherit}
 .pick-photo-preview{margin-top:4px;max-width:100%;max-height:120px;border-radius:4px;display:none}
 .pick-modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
 /* Dashboard */
-.dashboard-wrap{padding:20px 24px}
+.dashboard-wrap{padding:20px 0}
 .dashboard-title{font-size:18px;font-weight:700;letter-spacing:-0.3px;color:var(--ink);margin-bottom:4px}
 .dashboard-sub{font-size:12px;color:var(--ink-muted);margin-bottom:20px}
 .dash-section{margin-bottom:28px}
@@ -444,7 +444,7 @@ button,input,select,textarea{font-family:inherit}
 .req-link-copy{background:var(--surface);border:1px solid var(--accent);color:var(--accent);padding:4px 10px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
 
 /* Single request status page */
-.single-req-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;max-width:680px;margin:0 auto}
+.single-req-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;max-width:860px}
 .single-req-panel .srp-title{font-size:18px;font-weight:700;margin-bottom:4px}
 .single-req-panel .srp-id{font-size:11px;color:var(--ink-faint);font-family:monospace;margin-bottom:16px}
 .single-req-panel .srp-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-size:13px}
@@ -482,11 +482,11 @@ button,input,select,textarea{font-family:inherit}
 .qa-review  {background:#f3e8fc;color:#6d2ba6}
 .qa-fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-top:4px}
 .qa-fields .full{grid-column:1/-1}
-.qa-field-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-faint);margin-bottom:3px;display:block}
-.qa-field-input{width:100%;border:1px solid var(--border);border-radius:4px;padding:5px 7px;font-size:11px;color:var(--ink);font-family:inherit;background:var(--surface);outline:none;transition:border-color .12s}
+.qa-field-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-faint);margin-bottom:3px;display:block}
+.qa-field-input{width:100%;border:1px solid var(--border);border-radius:5px;padding:6px 8px;font-size:12px;color:var(--ink);font-family:inherit;background:var(--surface);outline:none;transition:border-color .12s}
 .qa-field-input:focus{border-color:var(--accent)}
 .qa-field-input:disabled{background:var(--bg);color:var(--ink-faint)}
-.qa-field-select{width:100%;border:1px solid var(--border);border-radius:4px;padding:5px 7px;font-size:11px;color:var(--ink);font-family:inherit;background:var(--surface);outline:none;cursor:pointer}
+.qa-field-select{width:100%;border:1px solid var(--border);border-radius:5px;padding:6px 8px;font-size:12px;color:var(--ink);font-family:inherit;background:var(--surface);outline:none;cursor:pointer}
 .qa-field-select:focus{border-color:var(--accent)}
 .qa-field-select:disabled{background:var(--bg);color:var(--ink-faint)}
 .qa-check-row{display:flex;align-items:center;gap:6px;margin-top:6px}
@@ -495,7 +495,7 @@ button,input,select,textarea{font-family:inherit}
 .qa-closeout-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:#f0ede9;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px}
 .qa-closeout-status{font-size:11px;color:var(--ink-muted)}
 .qa-closeout-status.ready{color:var(--green);font-weight:600}
-.btn-close-req{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#1a7a45;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-close-req{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#1a7a45;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
 .btn-close-req:hover:not(.gated){background:#145f35}
 .queue-filter-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:4px}
 .queue-filter-btn{background:none;border:none;padding:8px 16px;font-size:12px;font-weight:600;color:var(--ink-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
