@@ -218,10 +218,12 @@ button{font-family:inherit}
 .req-summary-row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:1px 0;font-size:12px}
 .req-summary-label{color:var(--ink-muted);white-space:nowrap}
 .req-summary-val{font-weight:600;color:var(--ink)}
-/* Queue row: dissolve summary card into inline metadata flow */
-.le-row2 .req-summary-box{display:contents}
-.le-row2 .req-summary-title{display:none}
-.le-row2 .req-summary-row{display:inline-flex;gap:4px;font-size:11px;padding:0;justify-content:flex-start}
+/* Export bar: full width */
+.export-summary .req-summary-box{display:block}
+/* Track detail: full width with top separator */
+.srp-items .req-summary-box{display:block;margin-top:10px;padding-top:8px;border-top:1px solid var(--border-faint);border-left:none;border-right:none;border-bottom:none;border-radius:0;padding-left:0;padding-right:0;min-width:0}
+/* Queue dedicated row */
+.le-req-summary{margin:2px 0 4px}
 /* Pick modal */
 .pick-modal{max-width:480px;width:90vw;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:10px;border:1px solid var(--border);padding:0;background:var(--surface);box-shadow:0 8px 32px rgba(0,0,0,.15)}
 .pick-modal::backdrop{background:rgba(0,0,0,.45)}
@@ -561,12 +563,15 @@ button{font-family:inherit}
         <h2>Search &amp; Build Request</h2>
         <div class="section-divider"></div>
       </div>
-      <div style="margin-top:5px;margin-bottom:2px">
-        <div style="font-size:10px;color:var(--ink-muted);font-weight:500;margin-bottom:6px">Active products only · Click any SKU to copy</div>
-        <div style="display:flex;flex-direction:column;gap:5px">
-          <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-muted)"><span class="bundle-badge" style="margin-left:0">BOM</span>Bundle SKU / multiple items</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-muted)"><span class="bundle-badge component-badge" style="margin-left:0">COMPONENT</span>Single item SKU</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;margin-top:5px;margin-bottom:2px;gap:16px">
+        <div>
+          <div style="font-size:10px;color:var(--ink-muted);font-weight:500;margin-bottom:6px">Active products only · Click any SKU to copy</div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-muted)"><span class="bundle-badge" style="margin-left:0">BOM</span>Bundle SKU / multiple items</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-muted)"><span class="bundle-badge component-badge" style="margin-left:0">COMPONENT</span>Single item SKU</div>
+          </div>
         </div>
+        <div id="builder-summary-box" style="min-width:210px"></div>
       </div>
     </div>
 
@@ -1258,6 +1263,8 @@ function renderCart(){
     if(_eps0) _eps0.textContent='';
     const _exs0=document.getElementById('export-req-summary-box');
     if(_exs0) _exs0.innerHTML='';
+    const _bsb0=document.getElementById('builder-summary-box');
+    if(_bsb0) _bsb0.innerHTML='';
     renderTallyBar();
     return;
   }
@@ -1335,7 +1342,9 @@ function renderCartSummary(){
   }
   const _priceSfx = hasPricing ? ` · Retail $${retailTotal.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})} · Cost $${costTotal.toFixed(2)}` : '';
   const _cse=document.getElementById('cart-sub');
-  if(_cse) _cse.innerHTML=items.length>0?buildSummaryBox(items.length,qtyTotal,retailTotal,costTotal,hasPricing):'No items yet';
+  if(_cse) _cse.textContent=items.length>0?`${items.length} item${items.length===1?'':'s'} · ${qtyTotal} unit${qtyTotal===1?'':'s'}`:'No items yet';
+  const _bsb=document.getElementById('builder-summary-box');
+  if(_bsb) _bsb.innerHTML=items.length>0?buildSummaryBox(items.length,qtyTotal,retailTotal,costTotal,hasPricing):'';
   const totalsBar=document.getElementById('cart-totals-bar');
   if(totalsBar) totalsBar.style.display='none';
   const _eps=document.getElementById('export-price-summary');
@@ -1731,13 +1740,13 @@ function renderQueueData(entries){
           ${trackLink}
         </div>
         <div class="le-row2">
-          ${buildSummaryBox(itemCount,qtyTotal,_qR,_qC,_qHP)}
           ${e.requiredBy?`<span>Pickup by <strong>${escapeHtml(e.requiredBy)}</strong></span>`:''}
           ${e.arrivalBy?`<span>Arrive by <strong>${escapeHtml(e.arrivalBy)}</strong></span>`:''}
           ${e.shippingRequired==='Yes'?`<span style="color:#1c5390;font-weight:600">📦 Ship</span>`:''}
           <span style="color:var(--ink-faint)">${escapeHtml(dateStr)}</span>
           ${urgentBadge}
         </div>
+        <div class="le-req-summary">${buildSummaryBox(itemCount,qtyTotal,_qR,_qC,_qHP)}</div>
         <div class="le-skus">${escapeHtml(skuPrev)}${escapeHtml(more)}</div>
         ${histPills?`<div class="le-history">${histPills}</div>`:''}
       </div>
