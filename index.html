@@ -20,7 +20,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
-button{font-family:inherit}
+button,input,select,textarea{font-family:inherit}
 
 .page-header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 24px 0;position:sticky;top:0;z-index:100}
 .header-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px}
@@ -33,12 +33,9 @@ button{font-family:inherit}
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
 @media(max-width:900px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
-.kpi-label{font-size:10px;font-weight:600;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.kpi-value{font-size:26px;font-weight:700;letter-spacing:-1px;line-height:1}
-.kpi-sub{font-size:10px;color:var(--ink-faint);margin-top:5px}
 
 .section-header{display:flex;align-items:center;padding:14px 0 8px;margin-bottom:4px}
-.section-header h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--ink-muted);white-space:nowrap}
+.section-header h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-muted);white-space:nowrap}
 .section-divider{flex:1;height:1px;background:var(--border);margin-left:12px}
 .section-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;margin-left:8px;background:var(--tan-faint);color:var(--ink-muted)}
 
@@ -131,7 +128,7 @@ button{font-family:inherit}
 .btn-primary{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
 .btn-primary:hover:not(:disabled){background:#1e3f78}
 .btn-primary:disabled{background:var(--ink-faint);cursor:not-allowed;opacity:.6}
-.btn-ghost{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--surface);color:var(--ink-muted);border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit}
+.btn-ghost{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--surface);color:var(--ink-muted);border:1px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit}
 .btn-ghost:hover{border-color:var(--red);color:var(--red)}
 
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:6px;font-size:12px;font-weight:500;box-shadow:0 4px 18px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:all .25s;z-index:300}
@@ -187,7 +184,7 @@ button{font-family:inherit}
 .view-panel{display:none}.view-panel.active{display:block}
 /* Warehouse kanban */
 .warehouse-header{padding:18px 24px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px}
-.warehouse-title{font-size:18px;font-weight:700;color:var(--ink)}
+.warehouse-title{font-size:18px;font-weight:700;letter-spacing:-0.3px;color:var(--ink)}
 .warehouse-sub{font-size:12px;color:var(--ink-muted)}
 .kanban-board{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:20px 24px;min-height:400px;overflow-x:auto}
 @media(max-width:900px){.kanban-board{grid-template-columns:repeat(2,1fr)}}
@@ -243,7 +240,7 @@ button{font-family:inherit}
 .pick-modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
 /* Dashboard */
 .dashboard-wrap{padding:20px 24px}
-.dashboard-title{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.dashboard-title{font-size:18px;font-weight:700;letter-spacing:-0.3px;color:var(--ink);margin-bottom:4px}
 .dashboard-sub{font-size:12px;color:var(--ink-muted);margin-bottom:20px}
 .dash-section{margin-bottom:28px}
 .dash-section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
@@ -497,7 +494,7 @@ button{font-family:inherit}
 .qa-closeout-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:#f0ede9;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px}
 .qa-closeout-status{font-size:11px;color:var(--ink-muted)}
 .qa-closeout-status.ready{color:var(--green);font-weight:600}
-.btn-close-req{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#1a7a45;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-close-req{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#1a7a45;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
 .btn-close-req:hover:not(.gated){background:#145f35}
 .queue-filter-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:4px}
 .queue-filter-btn{background:none;border:none;padding:8px 16px;font-size:12px;font-weight:600;color:var(--ink-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
