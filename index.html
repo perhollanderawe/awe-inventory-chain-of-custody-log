@@ -1047,11 +1047,12 @@ document.addEventListener('DOMContentLoaded', () => {
     loadQueue();
   } else {
     showView('builder');
-    document.getElementById('queue-panel-sub').textContent='Requests submitted from this browser';
+    document.getElementById('queue-panel-sub').textContent='All requests · oldest first';
     document.getElementById('queue-section-title').textContent='Request Queue';
-    document.getElementById('queue-section-tag').textContent='Requests submitted from this browser';
+    document.getElementById('queue-section-tag').textContent='Full queue — oldest at top';
     document.getElementById('queue-panel-title').textContent='Request Queue';
-    document.getElementById('queue-fifo-banner').textContent='Your submitted requests · click ↗ Track to view status';
+    document.getElementById('queue-fifo-banner').textContent='All submitted requests · click ↗ Track to view status';
+    loadQueue();
   }
 
   const luMeta=document.getElementById('last-updated-meta');
@@ -1061,7 +1062,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if(submitBtn) submitBtn.addEventListener('click',submitRequest);
 
   const qRefresh=document.getElementById('queue-refresh-btn');
-  if(qRefresh) qRefresh.addEventListener('click',()=>{ if(IS_ADMIN) loadQueue(); else loadMyRequests(); });
+  if(qRefresh) qRefresh.addEventListener('click',()=>{ loadQueue(); });
 
   renderAll();
 });
@@ -1420,7 +1421,7 @@ function showView(name){
   if(lb) lb.classList.toggle('active',name==='log'||name==='single');
   if(wb) wb.classList.toggle('active',name==='warehouse');
   if(db) db.classList.toggle('active',name==='dashboard');
-  if(name==='log'){ if(IS_ADMIN) loadQueue(); else loadMyRequests(); }
+  if(name==='log'){ loadQueue(); }
   if(name==='warehouse'){ loadWarehouse(); }
   if(name==='dashboard'){ loadDashboard(); }
 }
@@ -1668,13 +1669,13 @@ function renderQueueData(entries){
   const allClosed=entries.filter(e=>e.status==='Closed');
   if(meta) meta.textContent=`${allOpen.length} open · ${allClosed.length} closed`;
 
-  const tabsHtml=IS_ADMIN?`<div class="queue-filter-tabs"><button class="queue-filter-btn${queueFilter==='open'?' active':''}" data-filter="open" onclick="setQueueFilter('open')">Open Requests <span class="qf-count">${allOpen.length}</span></button><button class="queue-filter-btn${queueFilter==='closed'?' active':''}" data-filter="closed" onclick="setQueueFilter('closed')">Closed Requests <span class="qf-count">${allClosed.length}</span></button></div>`:'';
+  const tabsHtml=`<div class="queue-filter-tabs"><button class="queue-filter-btn${queueFilter==='open'?' active':''}" data-filter="open" onclick="setQueueFilter('open')">Open Requests <span class="qf-count">${allOpen.length}</span></button><button class="queue-filter-btn${queueFilter==='closed'?' active':''}" data-filter="closed" onclick="setQueueFilter('closed')">Closed Requests <span class="qf-count">${allClosed.length}</span></button></div>`;
 
-  const filtered=IS_ADMIN?(queueFilter==='closed'?allClosed:allOpen):entries;
+  const filtered=queueFilter==='closed'?allClosed:allOpen;
   const sorted=[...filtered].sort((a,b)=>String(a.submittedAt||'').localeCompare(String(b.submittedAt||'')));
 
   if(!sorted.length){
-    const msg=IS_ADMIN?(queueFilter==='closed'?'No closed requests yet.':'No open requests in the queue.'):(IS_ADMIN?'No requests in the queue yet.':'You have not submitted any requests yet.');
+    const msg=queueFilter==='closed'?'No closed requests yet.':'No open requests in the queue.';
     list.innerHTML=tabsHtml+`<div class="log-empty"><div class="log-empty-icon">📋</div><div style="font-weight:600;color:var(--ink-muted);margin-bottom:4px">No requests</div><div style="font-size:12px">${msg}</div></div>`;
     return;
   }
