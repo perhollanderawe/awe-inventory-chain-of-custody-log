@@ -98,7 +98,8 @@ button,input,select,textarea{font-family:inherit}
 .empty-icon{font-size:32px;margin-bottom:10px;opacity:.5}
 .empty-title{font-size:14px;font-weight:600;color:var(--ink-muted);margin-bottom:4px}
 
-.cart-list{flex:1;min-height:0;overflow-y:auto}
+.cart-scroll-region{flex:1;min-height:0;overflow-y:auto}
+.cart-list{overflow-y:visible}
 .cart-item{padding:10px 14px;border-bottom:1px solid var(--border-faint);display:grid;grid-template-columns:1fr auto;gap:6px}
 .cart-item:last-child{border-bottom:none}
 .cart-item-main{display:flex;gap:8px;align-items:flex-start;min-width:0}
@@ -122,7 +123,7 @@ button,input,select,textarea{font-family:inherit}
 .field-input:focus{border-color:var(--accent)}
 .required-mark{color:var(--red)}
 
-.export-bar{padding:14px 16px;border-top:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;gap:10px}
+.export-bar{padding:14px 16px;border-top:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;gap:10px;flex-shrink:0}
 .export-summary{font-size:11px;color:var(--ink-muted)}
 .export-summary strong{color:var(--ink);font-weight:700}
 .btn-primary{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
@@ -594,6 +595,7 @@ button,input,select,textarea{font-family:inherit}
     </div>
 
     <div class="card cart-card" id="cart-panel">
+      <div class="cart-scroll-region">
       <div class="card-header">
         <div>
           <div class="card-title">Request List</div>
@@ -716,6 +718,7 @@ button,input,select,textarea{font-family:inherit}
         <span class="total-label" style="margin-left:8px">Cost:</span>
         <span class="total-val cost" id="cart-cost-total">$0</span>
       </div>
+      </div><!-- /cart-scroll-region -->
       <div class="export-bar">
         <div class="export-summary">
           <span style="display:none" id="export-item-count">0</span><span style="display:none" id="export-qty-count">0</span><span style="display:none" id="export-price-summary"></span>
